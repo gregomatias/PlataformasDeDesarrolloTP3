@@ -13,6 +13,12 @@ namespace TP1
         public DbSet<Usuario> usuarios { get; set; }
         public DbSet<CajaDeAhorro> cajas { get; set; }
 
+        public DbSet<TarjetaDeCredito> tarjetas { get; set; }
+        public DbSet<Pago> pagos { get; set; }
+
+
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(Properties.Resources.stringDeConexion);
@@ -22,7 +28,7 @@ namespace TP1
         {
             //nombre de la tabla
             modelBuilder.Entity<Usuario>()
-                .ToTable("Usuarios")
+                .ToTable("Usuario")
                 .HasKey(u => u._id_usuario);
             //propiedades de los datos
             modelBuilder.Entity<Usuario>(
@@ -67,6 +73,76 @@ namespace TP1
                     eup => eup.HasOne(up => up.user).WithMany(u => u.usuarioCajas).HasForeignKey(u => u.id_usuario),
                     eup => eup.HasKey(k => new { k.id_caja , k.id_usuario})
                 );
+
+                //nombre de la tabla
+            modelBuilder.Entity<PlazoFijo>()
+                .ToTable("Plazo_fijo")
+                .HasKey(c => c._id_plazoFijo);
+            //propiedades de los datos
+            modelBuilder.Entity<PlazoFijo>(
+                plazo =>
+                {
+                    plazo.Property(c => c._id_usuario).HasColumnType("int");
+                    plazo.Property(c => c._monto).HasColumnType("float");
+                    plazo.Property(c => c._fechaIni).HasColumnType("datetime");
+                    plazo.Property(c => c._fechaFin).HasColumnType("datetime");
+                    plazo.Property(c => c._tasa).HasColumnType("float");
+                    plazo.Property(c => c._pagado).HasColumnType("bit");
+                });
+
+            //DEFINICIÓN DE LA RELACIÓN ONE TO MANY USUARIO -> DOMICILIO
+            modelBuilder.Entity<PlazoFijo>()
+            .HasOne(D => D._titular)
+            .WithMany(U => U._plazosFijos)
+            .HasForeignKey(D => D._id_usuario)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
+            //nombre de la tabla
+            modelBuilder.Entity<TarjetaDeCredito>()
+                .ToTable("Tarjeta_credito")
+                .HasKey(c => c._id_tarjeta);
+            //propiedades de los datos
+            modelBuilder.Entity<TarjetaDeCredito>(
+                plazo =>
+                {
+                    plazo.Property(c => c._id_usuario).HasColumnType("int");
+                    plazo.Property(c => c._numero).HasColumnType("nvarchar(200)");
+                    plazo.Property(c => c._codigoV).HasColumnType("int");
+                    plazo.Property(c => c._limite).HasColumnType("float");
+                    plazo.Property(c => c._consumos).HasColumnType("float");
+                });
+
+            //DEFINICIÓN DE LA RELACIÓN ONE TO MANY USUARIO -> DOMICILIO
+            modelBuilder.Entity<TarjetaDeCredito>()
+            .HasOne(D => D._titular)
+            .WithMany(U => U._tarjetas)
+            .HasForeignKey(D => D._id_usuario)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            //nombre de la tabla
+            modelBuilder.Entity<Pago>()
+                .ToTable("Pago")
+                .HasKey(c => c._id_pago);
+            //propiedades de los datos
+            modelBuilder.Entity<Pago>(
+                plazo =>
+                {
+                    plazo.Property(c => c._id_usuario).HasColumnType("int");
+                    plazo.Property(c => c._monto).HasColumnType("float");
+                    plazo.Property(c => c._pagado).HasColumnType("bit");
+                    plazo.Property(c => c._metodo).HasColumnType("nvarchar(200)");
+                    plazo.Property(c => c._detalle).HasColumnType("nvarchar(200)");
+                    plazo.Property(c => c._id_metodo).HasColumnType("bigint");
+                });
+
+            //DEFINICIÓN DE LA RELACIÓN ONE TO MANY USUARIO -> DOMICILIO
+            modelBuilder.Entity<Pago>()
+            .HasOne(D => D._usuario)
+            .WithMany(U => U._pagos)
+            .HasForeignKey(D => D._id_usuario)
+            .OnDelete(DeleteBehavior.Cascade);
+
         }
 
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TP1;
 
@@ -11,9 +12,11 @@ using TP1;
 namespace TP1.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20221116212657_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,41 +43,6 @@ namespace TP1.Migrations
                     b.HasKey("_id_caja");
 
                     b.ToTable("Caja_ahorro", (string)null);
-                });
-
-            modelBuilder.Entity("TP1.Pago", b =>
-                {
-                    b.Property<int>("_id_pago")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("_id_pago"));
-
-                    b.Property<string>("_detalle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<long>("_id_metodo")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("_id_usuario")
-                        .HasColumnType("int");
-
-                    b.Property<string>("_metodo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<double>("_monto")
-                        .HasColumnType("float");
-
-                    b.Property<bool>("_pagado")
-                        .HasColumnType("bit");
-
-                    b.HasKey("_id_pago");
-
-                    b.HasIndex("_id_usuario");
-
-                    b.ToTable("Pago", (string)null);
                 });
 
             modelBuilder.Entity("TP1.PlazoFijo", b =>
@@ -108,37 +76,6 @@ namespace TP1.Migrations
                     b.HasIndex("_id_usuario");
 
                     b.ToTable("Plazo_fijo", (string)null);
-                });
-
-            modelBuilder.Entity("TP1.TarjetaDeCredito", b =>
-                {
-                    b.Property<int>("_id_tarjeta")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("_id_tarjeta"));
-
-                    b.Property<int>("_codigoV")
-                        .HasColumnType("int");
-
-                    b.Property<double>("_consumos")
-                        .HasColumnType("float");
-
-                    b.Property<int>("_id_usuario")
-                        .HasColumnType("int");
-
-                    b.Property<double>("_limite")
-                        .HasColumnType("float");
-
-                    b.Property<string>("_numero")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("_id_tarjeta");
-
-                    b.HasIndex("_id_usuario");
-
-                    b.ToTable("Tarjeta_credito", (string)null);
                 });
 
             modelBuilder.Entity("TP1.Usuario", b =>
@@ -179,7 +116,7 @@ namespace TP1.Migrations
 
                     b.HasKey("_id_usuario");
 
-                    b.ToTable("Usuario", (string)null);
+                    b.ToTable("Usuarios", (string)null);
                 });
 
             modelBuilder.Entity("TP1.UsuarioCajaDeAhorro", b =>
@@ -197,32 +134,10 @@ namespace TP1.Migrations
                     b.ToTable("UsuarioCajaDeAhorro");
                 });
 
-            modelBuilder.Entity("TP1.Pago", b =>
-                {
-                    b.HasOne("TP1.Usuario", "_usuario")
-                        .WithMany("_pagos")
-                        .HasForeignKey("_id_usuario")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("_usuario");
-                });
-
             modelBuilder.Entity("TP1.PlazoFijo", b =>
                 {
                     b.HasOne("TP1.Usuario", "_titular")
                         .WithMany("_plazosFijos")
-                        .HasForeignKey("_id_usuario")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("_titular");
-                });
-
-            modelBuilder.Entity("TP1.TarjetaDeCredito", b =>
-                {
-                    b.HasOne("TP1.Usuario", "_titular")
-                        .WithMany("_tarjetas")
                         .HasForeignKey("_id_usuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -256,11 +171,7 @@ namespace TP1.Migrations
 
             modelBuilder.Entity("TP1.Usuario", b =>
                 {
-                    b.Navigation("_pagos");
-
                     b.Navigation("_plazosFijos");
-
-                    b.Navigation("_tarjetas");
 
                     b.Navigation("usuarioCajas");
                 });

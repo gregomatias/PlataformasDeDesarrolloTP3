@@ -21,12 +21,11 @@ namespace TP1
         public ICollection<CajaDeAhorro> cajas { get; } = new List<CajaDeAhorro>();
         public List<UsuarioCajaDeAhorro> usuarioCajas { get; set; }
 
-        /*
-        public List<PlazoFijo> pfs = new List<PlazoFijo>();
-        public List<TarjetaDeCredito> tarjetas = new List<TarjetaDeCredito>();
-        public List<Pago> pagos = new List<Pago>();
-        public List<CajaDeAhorro> cajas = new List<CajaDeAhorro>();
-        */
+        
+        public List<PlazoFijo> _plazosFijos = new List<PlazoFijo>();
+        public List<TarjetaDeCredito> _tarjetas = new List<TarjetaDeCredito>();
+        public List<Pago> _pagos = new List<Pago>();
+
 
         public Usuario() { }
         public Usuario(int dni, string nombre, string apellido, string mail, string password, bool bloqueado,bool/*int*/ esUsuarioAdmin,int intentosFallidos)

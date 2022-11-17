@@ -283,6 +283,7 @@
             this.comboBoxPlazo.Name = "comboBoxPlazo";
             this.comboBoxPlazo.Size = new System.Drawing.Size(121, 23);
             this.comboBoxPlazo.TabIndex = 4;
+            this.comboBoxPlazo.Click += new System.EventHandler(this.comboBoxPlazo_Click);
             // 
             // textBoxPlazo
             // 
@@ -300,6 +301,7 @@
             this.button2.TabIndex = 2;
             this.button2.Text = "Eliminar ";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
@@ -309,6 +311,7 @@
             this.button3.TabIndex = 1;
             this.button3.Text = "Crear";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // dataGridPlazo
             // 
@@ -406,6 +409,7 @@
             this.dataGridView3.RowTemplate.Height = 29;
             this.dataGridView3.Size = new System.Drawing.Size(472, 108);
             this.dataGridView3.TabIndex = 13;
+            this.dataGridView3.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView3_CellClick);
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -443,6 +447,7 @@
             this.button6.TabIndex = 12;
             this.button6.Text = "Eliminar";
             this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // label14
             // 
@@ -460,6 +465,7 @@
             this.cBox_caja_ahorro.Name = "cBox_caja_ahorro";
             this.cBox_caja_ahorro.Size = new System.Drawing.Size(147, 23);
             this.cBox_caja_ahorro.TabIndex = 10;
+            this.cBox_caja_ahorro.Click += new System.EventHandler(this.cBox_caja_ahorro_Click);
             // 
             // label13
             // 
@@ -477,6 +483,7 @@
             this.cBox_tarjeta.Name = "cBox_tarjeta";
             this.cBox_tarjeta.Size = new System.Drawing.Size(147, 23);
             this.cBox_tarjeta.TabIndex = 8;
+            this.cBox_tarjeta.Click += new System.EventHandler(this.cBox_tarjeta_Click);
             // 
             // txtb_concepto_pago
             // 
@@ -494,6 +501,7 @@
             this.button5.TabIndex = 6;
             this.button5.Text = "Confirmar";
             this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // btn_ingresar_pago
             // 
@@ -503,6 +511,7 @@
             this.btn_ingresar_pago.TabIndex = 5;
             this.btn_ingresar_pago.Text = "Ingresar";
             this.btn_ingresar_pago.UseVisualStyleBackColor = true;
+            this.btn_ingresar_pago.Click += new System.EventHandler(this.btn_ingresar_pago_Click);
             // 
             // txtb_monto_pago
             // 
@@ -544,6 +553,7 @@
             this.dataGridView4_pagos_pendientes.RowTemplate.Height = 29;
             this.dataGridView4_pagos_pendientes.Size = new System.Drawing.Size(472, 108);
             this.dataGridView4_pagos_pendientes.TabIndex = 1;
+            this.dataGridView4_pagos_pendientes.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView4_pagos_pendientes_CellClick);
             // 
             // columnaID
             // 
@@ -603,6 +613,7 @@
             this.cbx_lista_CajasAhorro.Name = "cbx_lista_CajasAhorro";
             this.cbx_lista_CajasAhorro.Size = new System.Drawing.Size(151, 23);
             this.cbx_lista_CajasAhorro.TabIndex = 7;
+            this.cbx_lista_CajasAhorro.Click += new System.EventHandler(this.cbx_lista_CajasAhorro_Click);
             // 
             // btn_PagarTarjeta
             // 
@@ -612,6 +623,7 @@
             this.btn_PagarTarjeta.TabIndex = 5;
             this.btn_PagarTarjeta.Text = "Pagar Tarjeta";
             this.btn_PagarTarjeta.UseVisualStyleBackColor = true;
+            this.btn_PagarTarjeta.Click += new System.EventHandler(this.btn_PagarTarjeta_Click);
             // 
             // btn_Crear_Tarjeta
             // 
@@ -621,6 +633,7 @@
             this.btn_Crear_Tarjeta.TabIndex = 4;
             this.btn_Crear_Tarjeta.Text = " Solicitar Tarjeta";
             this.btn_Crear_Tarjeta.UseVisualStyleBackColor = true;
+            this.btn_Crear_Tarjeta.Click += new System.EventHandler(this.btn_Crear_Tarjeta_Click);
             // 
             // dataGView_Tarjetas
             // 
@@ -698,7 +711,6 @@
             // 
             // txtb_monto
             // 
-            this.txtb_monto.Enabled = false;
             this.txtb_monto.Location = new System.Drawing.Point(487, 71);
             this.txtb_monto.Name = "txtb_monto";
             this.txtb_monto.PlaceholderText = "Ingrese el monto";
@@ -707,23 +719,23 @@
             // 
             // btn_depositar
             // 
-            this.btn_depositar.Enabled = false;
             this.btn_depositar.Location = new System.Drawing.Point(587, 106);
             this.btn_depositar.Name = "btn_depositar";
             this.btn_depositar.Size = new System.Drawing.Size(94, 29);
             this.btn_depositar.TabIndex = 4;
             this.btn_depositar.Text = "Depositar";
             this.btn_depositar.UseVisualStyleBackColor = true;
+            this.btn_depositar.Click += new System.EventHandler(this.btn_depositar_Click);
             // 
             // btn_extraer
             // 
-            this.btn_extraer.Enabled = false;
             this.btn_extraer.Location = new System.Drawing.Point(438, 106);
             this.btn_extraer.Name = "btn_extraer";
             this.btn_extraer.Size = new System.Drawing.Size(94, 29);
             this.btn_extraer.TabIndex = 3;
             this.btn_extraer.Text = "Extraer";
             this.btn_extraer.UseVisualStyleBackColor = true;
+            this.btn_extraer.Click += new System.EventHandler(this.btn_extraer_Click);
             // 
             // comboBox1
             // 
@@ -732,6 +744,7 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(175, 23);
             this.comboBox1.TabIndex = 2;
+            this.comboBox1.Click += new System.EventHandler(this.comboBox1_Click);
             // 
             // tabPage6
             // 
@@ -800,6 +813,7 @@
             this.btn_transferir.TabIndex = 9;
             this.btn_transferir.Text = "Transferir";
             this.btn_transferir.UseVisualStyleBackColor = true;
+            this.btn_transferir.Click += new System.EventHandler(this.btn_transferir_Click);
             // 
             // comboBox2
             // 
@@ -808,6 +822,7 @@
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(151, 23);
             this.comboBox2.TabIndex = 8;
+            this.comboBox2.Click += new System.EventHandler(this.comboBox2_Click);
             // 
             // tabPage7
             // 

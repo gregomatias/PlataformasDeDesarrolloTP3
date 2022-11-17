@@ -21,7 +21,7 @@ namespace TP1
         private List<List<string>> datos;
         private Banco banco;
         private TransfDelegadoForm2 transEvento;
-        private int celda;
+        private int celda = -1;
 
         public Form3(Banco banco, TransfDelegadoForm2 transEvento)
         {
@@ -34,6 +34,9 @@ namespace TP1
             InitializeComponent();
 
             cargaCajasAhorro();
+            cargaPlazoFijo();
+            cargaTarjetasDeCredito();
+            cargarPagos();
 
             //Valida Amin
             /*if (!banco.esAdmin()) { 
@@ -118,14 +121,14 @@ namespace TP1
                     break;
                 case 1:
                     // PLazo Fijo
+                    cargaPlazoFijo();
                     break;
                 case 2:
                     // Pagos
-                    //cargarPagos();
+                    cargarPagos();
                     break;
                 case 3:
-
-                    //cargaTarjetasDeCredito();
+                    cargaTarjetasDeCredito();
 
                     break;
                 case 6:
@@ -141,6 +144,454 @@ namespace TP1
         {
 
         }
+
+        private void comboBoxPlazo_Click(object sender, EventArgs e)
+        {
+
+            comboBoxPlazo.Items.Clear();
+            comboBoxPlazo.Refresh();
+
+            foreach (CajaDeAhorro caja in banco.buscarCajasUsuario())
+            {
+                comboBoxPlazo.Items.Add(caja._cbu);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (comboBoxPlazo.Text != "" && textBoxPlazo.Text != "")
+            {
+                CajaDeAhorro caja;
+
+                DateTime fecha = new DateTime();
+                fecha = DateTime.Now;
+                float montoPlazo = float.Parse(textBoxPlazo.Text);
+                if (montoPlazo >= 1000)
+                {
+                    if (banco.crearPlazoFijo(montoPlazo, 7, comboBoxPlazo.SelectedItem.ToString()))
+                    {
+                        MessageBox.Show("El plazo fijo ha sido creado exitosamente");
+                        cargaPlazoFijo();
+                        
+                    }
+                    else
+                    {
+                        MessageBox.Show("El saldo de la cuenta no es suficiente");
+
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("El monto debe ser al menos 1000$");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Elija una caja de ahorro para realizar el Plazo Fijo y un monto");
+
+            }
+            
+            
+        }
+
+        private void cargaPlazoFijo()
+        {
+            int fila;
+            dataGridPlazo.Rows.Clear();
+            dataGridPlazo.Refresh();
+
+            foreach(PlazoFijo pf in banco.buscarPlazosFijosUsuario())
+            {
+
+                fila = dataGridPlazo.Rows.Add();
+                dataGridPlazo.Rows[fila].Cells[0].Value = pf._id_plazoFijo;
+                //dataGridPlazo.Rows[fila].Cells[1].Value = pf._id_usuario;
+                dataGridPlazo.Rows[fila].Cells[1].Value = pf._monto;
+                //dataGridPlazo.Rows[fila].Cells[2].Value = pf._fechaIni;
+                dataGridPlazo.Rows[fila].Cells[3].Value = pf._fechaFin;
+                dataGridPlazo.Rows[fila].Cells[4].Value = pf._tasa;
+                //dataGridPlazo.Rows[fila].Cells[6].Value = int.Parse(pf._pagado);
+
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (banco.bajaPlazoFijo(int.Parse(dataGridPlazo.CurrentCell.Value.ToString())))
+                {
+
+                    MessageBox.Show("El Plazo Fijo se ha eliminado");
+                    cargaPlazoFijo();
+                }
+                else
+                {
+                    MessageBox.Show("El plazo fijo aún se encuentra pendiente de pago, pruebe eliminar el registro en una fecha posterior");
+
+                }
+                
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
+
+        }
+
+        private void cBox_caja_ahorro_Click(object sender, EventArgs e)
+        {
+            cBox_caja_ahorro.Items.Clear();
+            cBox_caja_ahorro.Refresh();
+
+            foreach (CajaDeAhorro caja in banco.buscarCajasUsuario())
+            {
+                cBox_caja_ahorro.Items.Add(caja._cbu);
+            }
+
+        }
+
+        private void cbx_lista_CajasAhorro_Click(object sender, EventArgs e)
+        {
+            cbx_lista_CajasAhorro.Items.Clear();
+            cbx_lista_CajasAhorro.Refresh();
+
+            foreach (CajaDeAhorro caja in banco.buscarCajasUsuario())
+            {
+                cbx_lista_CajasAhorro.Items.Add(caja._cbu);
+            }
+
+        }
+
+        private void btn_Crear_Tarjeta_Click(object sender, EventArgs e)
+        {
+            if(banco.altaTarjeta())
+            {
+                MessageBox.Show("Tarjeta dada de alta correctamente");
+                cargaTarjetasDeCredito();
+            }
+            else
+            {
+                MessageBox.Show("Tarjeta no pudo darse de alta");
+            }
+        }
+
+        private void cargaTarjetasDeCredito()
+        {
+            int fila;
+            dataGView_Tarjetas.Rows.Clear();
+            dataGView_Tarjetas.Refresh();
+
+            foreach (TarjetaDeCredito tarjeta in banco.buscarTarjetas())
+            {
+
+                fila = dataGView_Tarjetas.Rows.Add();
+                dataGView_Tarjetas.Rows[fila].Cells[0].Value = tarjeta._numero;
+                dataGView_Tarjetas.Rows[fila].Cells[1].Value = tarjeta._limite;
+                dataGView_Tarjetas.Rows[fila].Cells[2].Value = tarjeta._consumos;
+
+            }
+
+        }
+
+        private void btn_PagarTarjeta_Click(object sender, EventArgs e)
+        {
+            try { 
+                if (banco.pagarTarjeta(dataGView_Tarjetas.CurrentCell.Value.ToString(), cbx_lista_CajasAhorro.SelectedItem.ToString()))
+                {
+
+                    MessageBox.Show("Se ha cancelado el saldo de su tarjeta");
+                    cargaTarjetasDeCredito();
+                }
+                else
+                {
+                    MessageBox.Show("No se realizo el pago, verifique su saldo");
+                }
+            } 
+            catch(Exception ex)
+            {
+                MessageBox.Show("Debe seleccionar una tarjeta y una caja de ahorro válida");
+            }
+        }
+
+        private void comboBox1_Click(object sender, EventArgs e)
+        {
+            comboBox1.Items.Clear();
+            comboBox1.Refresh();
+
+            foreach (CajaDeAhorro caja in banco.buscarCajasUsuario())
+            {
+                comboBox1.Items.Add(caja._cbu);
+            }
+
+        }
+
+        private void btn_extraer_Click(object sender, EventArgs e)
+        {
+
+            try { 
+                if (txtb_monto.Text != "")
+                {
+                    float monto = float.Parse(txtb_monto.Text);
+                    if (monto > 0)
+                    {
+
+
+                        if (banco.retirarSaldo(comboBox1.SelectedItem.ToString(), monto))
+                        {
+                            MessageBox.Show("Retiro efectuado");
+                            txtb_monto.Text = "";
+                        }
+                        else
+                        {
+                            MessageBox.Show("El retiro no pudo efectuarse, verifique su saldo");
+                        }
+
+                    }
+                    else { MessageBox.Show("Monto debe ser mayor a cero"); }
+
+
+                }
+                else { MessageBox.Show("El monto no puede estar vacio"); }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Debe ingresar una cuanta válida y completar el monto a extraer");
+            }
+
+        }
+
+        private void btn_depositar_Click(object sender, EventArgs e)
+        {
+            try { 
+                if (txtb_monto.Text != "")
+                {
+                    float monto = float.Parse(txtb_monto.Text);
+                    if (monto > 0)
+                    {
+
+                        if (banco.depositarSaldo(comboBox1.SelectedItem.ToString(), monto))
+                        {
+                            MessageBox.Show("Deposito efectuado");
+                            txtb_monto.Text = "";
+                            // refreshData();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error");
+                        }
+
+                    }
+                    else { MessageBox.Show("Monto debe ser mayor a cero"); }
+
+
+                }
+                else { MessageBox.Show("El monto no puede estar vacio"); }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Debe ingresar una cuanta válida y completar el monto a depositar");
+            }
+
+        }
+
+        private void comboBox2_Click(object sender, EventArgs e)
+        {
+
+            comboBox2.Items.Clear();
+            comboBox2.Refresh();
+
+            foreach (CajaDeAhorro caja in banco.buscarCajasUsuario())
+            {
+                comboBox2.Items.Add(caja._cbu);
+            }
+        }
+
+        private void btn_transferir_Click(object sender, EventArgs e)
+        {
+
+
+
+            if (txtb_monto_transferencia.Text != "" && txtb_cbu_destino.Text != "")
+            {
+                float monto = float.Parse(txtb_monto_transferencia.Text);
+                string cbu_destino = txtb_cbu_destino.Text;
+                if (monto > 0)
+                {
+
+
+                    if (banco.transferir(comboBox2.SelectedItem.ToString(), cbu_destino, monto))
+                    {
+                        MessageBox.Show("Realizada correctamente");
+                        txtb_monto_transferencia.Text = "";
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("La transferencia no pudo efectuarse, verifique su saldo");
+                    }
+
+                }
+                else { MessageBox.Show("Monto debe ser mayor a cero"); }
+
+
+            }
+            else { MessageBox.Show("El monto no puede estar vacio"); }
+
+
+        }
+
+        private void cBox_tarjeta_Click(object sender, EventArgs e)
+        {
+            cBox_tarjeta.Items.Clear();
+            cBox_tarjeta.Refresh();
+
+            foreach (TarjetaDeCredito tc in banco.buscarTarjetas())
+            {
+                cBox_tarjeta.Items.Add(tc._numero);
+            }
+
+        }
+
+        private void btn_ingresar_pago_Click(object sender, EventArgs e)
+        {
+            float montoPago = 0;
+            try { montoPago = float.Parse(txtb_monto_pago.Text); }
+            catch (Exception ex) { MessageBox.Show("Debe ingresar el monto del pago"); }
+
+
+            if (cBox_tarjeta.Text == "" && cBox_caja_ahorro.Text == "")
+            {
+                MessageBox.Show("Debe ingresar un método de pago");
+            }
+            else
+            {
+                if ((cBox_tarjeta.Text == "" && cBox_caja_ahorro.Text != "") || (cBox_tarjeta.Text != "" && cBox_caja_ahorro.Text == ""))
+                {
+
+                    if (cBox_tarjeta.Text != "")
+                    {
+                        banco.pagar(montoPago, "TC", txtb_concepto_pago.Text, Int64.Parse(cBox_tarjeta.Text));
+                        MessageBox.Show("Pago ingresado");
+                        cargarPagos();
+                    }
+                    else if (cBox_caja_ahorro.Text != "")
+                    {
+                        banco.pagar(montoPago, "CA", txtb_concepto_pago.Text, Int64.Parse(cBox_caja_ahorro.Text));
+                        MessageBox.Show("Pago ingresado");
+                        cargarPagos();
+                    }
+                    else { MessageBox.Show("Tarjeta o Caja de Ahorro deben tener datos"); }
+                }
+                else
+                {
+                    MessageBox.Show("Debe ingresar solo un método de pago");
+                    cBox_caja_ahorro.Text = "";
+                    cBox_tarjeta.Text = "";
+                }
+            }
+
+        }
+
+        public void cargarPagos()
+        {
+            this.cargaListaPagos(true);
+            this.cargaListaPagos(false);
+
+        }
+
+        public void cargaListaPagos(bool pagado)
+        {
+            if (!pagado)
+            {
+                dataGridView3.Rows.Clear();
+                dataGridView3.Refresh();
+                
+                int fila;
+                foreach (Pago pago in banco.buscarPagosUsuario(pagado))
+                {
+
+                    fila = dataGridView3.Rows.Add();
+                    dataGridView3.Rows[fila].Cells[0].Value = pago._id_pago;
+                    dataGridView3.Rows[fila].Cells[1].Value = pago._metodo;
+                    dataGridView3.Rows[fila].Cells[2].Value = pago._detalle;
+                    dataGridView3.Rows[fila].Cells[3].Value = pago._monto;
+
+                }
+            }
+            else
+            {
+
+                dataGridView4_pagos_pendientes.Rows.Clear();
+                dataGridView4_pagos_pendientes.Refresh();
+
+                int fila;
+                foreach (Pago pago in banco.buscarPagosUsuario(pagado))
+                {
+
+                    fila = dataGridView4_pagos_pendientes.Rows.Add();
+                    dataGridView4_pagos_pendientes.Rows[fila].Cells[0].Value = pago._id_pago;
+                    dataGridView4_pagos_pendientes.Rows[fila].Cells[1].Value = pago._metodo;
+                    dataGridView4_pagos_pendientes.Rows[fila].Cells[2].Value = pago._detalle;
+                    dataGridView4_pagos_pendientes.Rows[fila].Cells[3].Value = pago._monto;
+
+
+                }
+
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            //this.celda >= 0 && 
+            if (banco.modificarPago(this.celda))
+            {
+                MessageBox.Show("El pago se realizo de manera exitosa");
+                cargarPagos();
+            }
+            else
+            {
+                MessageBox.Show("El pago no pudo realizarse");
+            }
+        }
+
+        private void dataGridView3_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+            if (Banco.IsNumeric(dataGridView3.CurrentCell.Value.ToString()))
+            {
+                this.celda = int.Parse(dataGridView3.CurrentCell.Value.ToString());
+            }
+            else
+            {
+                MessageBox.Show("Debe seleccionar un ID de pago válido");
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (banco.eliminarPago(this.celda))
+            {
+                MessageBox.Show("El pago se elimino de manera exitosa");
+                cargaListaPagos(true);
+            }
+            else
+            {
+                MessageBox.Show("El pago no pudo eliminarse");
+            }
+
+        }
+
+        private void dataGridView4_pagos_pendientes_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (Banco.IsNumeric(dataGridView4_pagos_pendientes.CurrentCell.Value.ToString()))
+            {
+                this.celda = int.Parse(dataGridView4_pagos_pendientes.CurrentCell.Value.ToString());
+            }
+            else
+            {
+                MessageBox.Show("Debe seleccionar un ID de pago válido");
+            }
+
+        }
+
     }
 }
 

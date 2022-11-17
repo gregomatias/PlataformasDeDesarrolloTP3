@@ -24,7 +24,9 @@ namespace TP1
         private void TransfDelegadoForm3()
         {
             this.Show();
-            formDeRegistro.Close();
+            try { 
+                formDeRegistro.Close();
+            } catch(Exception ex) { }
 
         }
 
