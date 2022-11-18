@@ -15,7 +15,7 @@ namespace TP1
 
         public DbSet<TarjetaDeCredito> tarjetas { get; set; }
         public DbSet<Pago> pagos { get; set; }
-
+        public DbSet<Movimiento> movimientos { get; set; }
 
 
 
@@ -46,7 +46,7 @@ namespace TP1
                 })
             ;
             //Ignoro, no agrego UsuarioManager a la base de datos
-            modelBuilder.Ignore<UsuarioManager>();
+            modelBuilder.Ignore<Banco>();
 
             //nombre de la tabla
             modelBuilder.Entity<CajaDeAhorro>()
@@ -60,8 +60,7 @@ namespace TP1
                     caja.Property(c => c._cbu).IsRequired(true);
                     caja.Property(c => c._saldo).HasColumnType("float");
                 });
-            //Ignoro, no agrego UsuarioManager a la base de datos
-            modelBuilder.Ignore<CajaDeAhorroManager>();
+
 
 
             //DEFINICIÓN DE LA RELACIÓN MANY TO MANY USUARIO <-> PAIS
@@ -141,6 +140,18 @@ namespace TP1
             .HasOne(D => D._usuario)
             .WithMany(U => U._pagos)
             .HasForeignKey(D => D._id_usuario)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
+            modelBuilder.Entity<Movimiento>()
+                       .ToTable("Movimiento")
+                .HasKey(M => M._id_Movimiento);
+
+            //DEFINICIÓN DE LA RELACIÓN ONE TO MANY Movimiento>>CajaDeAhorro
+            modelBuilder.Entity<Movimiento>()
+            .HasOne(M => M._cajaDeAhorro)
+            .WithMany(C => C._movimientos)
+            .HasForeignKey(M => M._id_CajaDeAhorro)
             .OnDelete(DeleteBehavior.Cascade);
 
         }

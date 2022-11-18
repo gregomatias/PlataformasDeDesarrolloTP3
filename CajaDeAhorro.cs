@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,9 +11,11 @@ namespace TP1
     {
         /*
         private List<int> titulares = new List<int>();
-        private List<Movimiento> movimientos = new List<Movimiento>();
         */
+        private List<Movimiento> movimientos { get; set; } = new List<Movimiento>();
+        
         public ICollection<Usuario> titulares { get; } = new List<Usuario>();
+
         public List<UsuarioCajaDeAhorro> usuarioCajas { get; set; }
 
         public CajaDeAhorro() { }
@@ -43,14 +46,6 @@ namespace TP1
         }
 
 
-        /*
-        public List<int> _titulares
-
-        {
-            get { return titulares; }
-            set { titulares = value; }
-        }
-        */
 
         private int id = 0;
 
@@ -68,14 +63,14 @@ namespace TP1
 			set { cbu = value; }
 		}
 
-        /*
+        
 		public List<Movimiento> _movimientos
 		{
 			get { return movimientos; }
 			set { movimientos =value; }
 		}
 		
-        */
+       
 
 		private double saldo;
 
@@ -85,6 +80,11 @@ namespace TP1
 			get { return saldo; }
 			set { saldo = value; }
 		}
+
+        public override string ToString()
+        {
+            return "Id: " + _id_caja + " CBU: " + _cbu + " Saldo: " + _saldo+ " QMovimientos:" + _movimientos.Count();
+        }
 
 
 

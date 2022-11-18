@@ -17,8 +17,11 @@ namespace TP1
         {
             if (disposing && (components != null))
             {
+                
                 components.Dispose();
             }
+            //Cierra el contexto
+            banco.cerrar();
             base.Dispose(disposing);
         }
 

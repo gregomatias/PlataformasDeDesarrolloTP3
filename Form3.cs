@@ -29,7 +29,7 @@ namespace TP1
             this.transEvento = transEvento;
 
             this.banco = banco;
-            
+
 
             InitializeComponent();
 
@@ -85,11 +85,12 @@ namespace TP1
 
         private void btn_crearCajaAhorro_Click(object sender, EventArgs e)
         {
-            if(banco.crearCajaAhorro())
+            if (banco.crearCajaAhorro())
             {
                 cargaCajasAhorro();
                 MessageBox.Show("Caja de ahorro creada con éxito");
-            } else { MessageBox.Show("No se pudo crear la caja de ahorro"); }
+            }
+            else { MessageBox.Show("No se pudo crear la caja de ahorro"); }
         }
 
         private void cargaCajasAhorro()
@@ -168,11 +169,11 @@ namespace TP1
                 float montoPlazo = float.Parse(textBoxPlazo.Text);
                 if (montoPlazo >= 1000)
                 {
-                    if (banco.crearPlazoFijo(montoPlazo, 7, comboBoxPlazo.SelectedItem.ToString()))
+                    if (banco.AltaPlazoFijo(montoPlazo, 7, comboBoxPlazo.SelectedItem.ToString()))
                     {
                         MessageBox.Show("El plazo fijo ha sido creado exitosamente");
                         cargaPlazoFijo();
-                        
+
                     }
                     else
                     {
@@ -190,8 +191,8 @@ namespace TP1
                 MessageBox.Show("Elija una caja de ahorro para realizar el Plazo Fijo y un monto");
 
             }
-            
-            
+
+
         }
 
         private void cargaPlazoFijo()
@@ -200,7 +201,7 @@ namespace TP1
             dataGridPlazo.Rows.Clear();
             dataGridPlazo.Refresh();
 
-            foreach(PlazoFijo pf in banco.buscarPlazosFijosUsuario())
+            foreach (PlazoFijo pf in banco.buscarPlazosFijosUsuario())
             {
 
                 fila = dataGridPlazo.Rows.Add();
@@ -230,7 +231,7 @@ namespace TP1
                     MessageBox.Show("El plazo fijo aún se encuentra pendiente de pago, pruebe eliminar el registro en una fecha posterior");
 
                 }
-                
+
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
 
@@ -262,7 +263,7 @@ namespace TP1
 
         private void btn_Crear_Tarjeta_Click(object sender, EventArgs e)
         {
-            if(banco.altaTarjeta())
+            if (banco.altaTarjeta())
             {
                 MessageBox.Show("Tarjeta dada de alta correctamente");
                 cargaTarjetasDeCredito();
@@ -293,8 +294,9 @@ namespace TP1
 
         private void btn_PagarTarjeta_Click(object sender, EventArgs e)
         {
-            try { 
-                if (banco.pagarTarjeta(dataGView_Tarjetas.CurrentCell.Value.ToString(), cbx_lista_CajasAhorro.SelectedItem.ToString()))
+            try
+            {
+                if (banco.PagarTarjeta(dataGView_Tarjetas.CurrentCell.Value.ToString(), cbx_lista_CajasAhorro.SelectedItem.ToString()))
                 {
 
                     MessageBox.Show("Se ha cancelado el saldo de su tarjeta");
@@ -304,8 +306,8 @@ namespace TP1
                 {
                     MessageBox.Show("No se realizo el pago, verifique su saldo");
                 }
-            } 
-            catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show("Debe seleccionar una tarjeta y una caja de ahorro válida");
             }
@@ -326,7 +328,8 @@ namespace TP1
         private void btn_extraer_Click(object sender, EventArgs e)
         {
 
-            try { 
+            try
+            {
                 if (txtb_monto.Text != "")
                 {
                     float monto = float.Parse(txtb_monto.Text);
@@ -351,7 +354,7 @@ namespace TP1
                 }
                 else { MessageBox.Show("El monto no puede estar vacio"); }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Debe ingresar una cuanta válida y completar el monto a extraer");
             }
@@ -361,7 +364,7 @@ namespace TP1
         private void btn_depositar_Click(object sender, EventArgs e)
         {
             try { 
-                if (txtb_monto.Text != "")
+                if (txtb_monto.Text != "" && comboBox1.SelectedItem.ToString() !="")
                 {
                     float monto = float.Parse(txtb_monto.Text);
                     if (monto > 0)
@@ -383,12 +386,9 @@ namespace TP1
 
 
                 }
-                else { MessageBox.Show("El monto no puede estar vacio"); }
+                else { MessageBox.Show("Monto y caja son obligatorios"); }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Debe ingresar una cuanta válida y completar el monto a depositar");
-            }
+            catch(Exception ex) {MessageBox.Show(ex.Message); }
 
         }
 
@@ -417,7 +417,7 @@ namespace TP1
                 {
 
 
-                    if (banco.transferir(comboBox2.SelectedItem.ToString(), cbu_destino, monto))
+                    if (banco.AltaTransferencia(comboBox2.SelectedItem.ToString(), cbu_destino, monto))
                     {
                         MessageBox.Show("Realizada correctamente");
                         txtb_monto_transferencia.Text = "";
@@ -468,13 +468,13 @@ namespace TP1
 
                     if (cBox_tarjeta.Text != "")
                     {
-                        banco.pagar(montoPago, "TC", txtb_concepto_pago.Text, Int64.Parse(cBox_tarjeta.Text));
+                        banco.AltaPago(montoPago, "TC", txtb_concepto_pago.Text, Int64.Parse(cBox_tarjeta.Text));
                         MessageBox.Show("Pago ingresado");
                         cargarPagos();
                     }
                     else if (cBox_caja_ahorro.Text != "")
                     {
-                        banco.pagar(montoPago, "CA", txtb_concepto_pago.Text, Int64.Parse(cBox_caja_ahorro.Text));
+                        banco.AltaPago(montoPago, "CA", txtb_concepto_pago.Text, Int64.Parse(cBox_caja_ahorro.Text));
                         MessageBox.Show("Pago ingresado");
                         cargarPagos();
                     }
@@ -503,7 +503,7 @@ namespace TP1
             {
                 dataGridView3.Rows.Clear();
                 dataGridView3.Refresh();
-                
+
                 int fila;
                 foreach (Pago pago in banco.buscarPagosUsuario(pagado))
                 {
@@ -592,6 +592,56 @@ namespace TP1
 
         }
 
+        private void btn_busca_movimiento_Click(object sender, EventArgs e)
+        {
+            if (comboBox3_movimientos.Text != "")
+            {
+                float montoFiltro;
+                if (txtb_filtro_monto.Text != "")
+                {
+                    montoFiltro = float.Parse(txtb_filtro_monto.Text);
+
+                }
+                else { montoFiltro = 0; }
+
+                List<List<string>> listaMovimientos = new List<List<string>>();
+
+                listaMovimientos = banco.BuscarMovimiento(comboBox3_movimientos.Text, txtb_filtro_detalle.Text, dateTimePicker_filtro.Value, montoFiltro);
+
+                dataGridView_movimiento.Rows.Clear();
+                dataGridView_movimiento.Refresh();
+
+
+                //Nuevo retorna un string con todos los datos
+                foreach (List<string> intem in listaMovimientos)
+                {
+                    dataGridView_movimiento.Rows.Add(intem.ToArray());
+
+
+                }
+
+
+
+
+            }
+            else { MessageBox.Show("La cuenta es obligatoria"); }
+
+        }
+
+        private void comboBox3_movimientos_Click(object sender, EventArgs e)
+        {
+
+            comboBox3_movimientos.Items.Clear();
+            comboBox3_movimientos.Refresh();
+            List<CajaDeAhorro> listaCajaAhorro = new List<CajaDeAhorro>();
+            listaCajaAhorro = banco.buscarCajasUsuario();
+
+            foreach (CajaDeAhorro caja in listaCajaAhorro)
+            {
+                comboBox3_movimientos.Items.Add(caja._cbu);
+            }
+
+        }
     }
 }
 
