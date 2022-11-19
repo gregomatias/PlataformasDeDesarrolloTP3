@@ -306,22 +306,31 @@ namespace TP1
 
 
 
-        public bool aumentarSaldoCA(Usuario usuario, string cbu, double monto)
+        public bool aumentarSaldoCA(string cbu, double monto)
         {
-            foreach (CajaDeAhorro caja in usuario.cajas)
+            CajaDeAhorro ca = null;
+            foreach (CajaDeAhorro caja in contexto.cajas)
             {
                 if (caja._cbu.Equals(cbu))
                 {
-                    caja._saldo = caja._saldo + monto;
-                    contexto.usuarios.Update(usuario);
-                    contexto.SaveChanges();
-                    AltaMovimiento(caja, "Deposito en cuenta", monto);
-                    return true;
+                    ca = caja;
 
                 }
             }
 
-            return false;
+            try
+            {
+                ca._saldo = ca._saldo + monto;
+                contexto.cajas.Update(ca);
+                contexto.SaveChanges();
+                AltaMovimiento(ca, "Deposito en cuenta", monto);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Ocurrió un error al realizar el depósito: " + ex.Message);
+                return false;
+            }
         }
 
 
@@ -681,7 +690,7 @@ namespace TP1
         {
             try
             {
-                return this.aumentarSaldoCA(usuarioLogueado, cbu, monto);
+                return this.aumentarSaldoCA(cbu, monto);
 
             }
             catch (Exception ex)

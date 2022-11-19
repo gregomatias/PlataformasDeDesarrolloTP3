@@ -447,7 +447,7 @@ namespace TP1
                         }
                         else
                         {
-                            MessageBox.Show("Error");
+                            MessageBox.Show("Error al realizar deposito");
                         }
 
                     }
