@@ -131,6 +131,6 @@
     <value>..\Resources\refresh_wght400.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="stringDeConexion" xml:space="preserve">
-    <value>Data Source=DESKTOP-P8JAOV6\SQLEXPRESS;Initial Catalog=TP2_PLATAFORMAS;Integrated Security=True;Encrypt=False</value>
+    <value>Data Source=LAPTOP-LJ04CJK1\SQLEXPRESS;Initial Catalog=TP2_PLATAFORMAS;Integrated Security=True;Encrypt=False</value>
   </data>
 </root>

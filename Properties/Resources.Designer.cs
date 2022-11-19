@@ -101,7 +101,7 @@ namespace TP1.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Data Source=DESKTOP-P8JAOV6\SQLEXPRESS;Initial Catalog=TP2_PLATAFORMAS;Integrated Security=True;Encrypt=False.
+        ///   Busca una cadena traducida similar a Data Source=LAPTOP-LJ04CJK1\SQLEXPRESS;Initial Catalog=TP2_PLATAFORMAS;Integrated Security=True;Encrypt=False.
         /// </summary>
         internal static string stringDeConexion {
             get {

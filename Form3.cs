@@ -37,13 +37,15 @@ namespace TP1
             cargaPlazoFijo();
             cargaTarjetasDeCredito();
             cargarPagos();
+            cargaUsuarios();
+
+            label2.Text = banco.obtenerNombre();
 
             //Valida Amin
-            /*if (!banco.esAdmin()) { 
+            if (!banco.esAdmin()) { 
                 this.tabControl.TabPages.Remove(tabUsuarios);
                 this.tabControl.TabPages.Remove(tabTrasladoCajas);
-           
-            }*/
+            }
 
         }
         public Form3(object[] args)
@@ -98,14 +100,22 @@ namespace TP1
             int fila;
             dataGridView1.Rows.Clear();
             dataGridView1.Refresh();
-
-            foreach (CajaDeAhorro caja in banco.buscarCajasUsuario())
+            List<CajaDeAhorro> lista = null;
+            if(banco.esAdmin())
             {
+                lista = banco.buscarCajasAdmin();
+            } else { lista = banco.buscarCajasUsuario(); }
 
-                fila = dataGridView1.Rows.Add();
-                dataGridView1.Rows[fila].Cells[0].Value = caja._cbu;
-                dataGridView1.Rows[fila].Cells[1].Value = caja._saldo;
+            if(lista!=null)
+            { 
+                foreach (CajaDeAhorro caja in lista)
+                {
 
+                    fila = dataGridView1.Rows.Add();
+                    dataGridView1.Rows[fila].Cells[0].Value = caja._cbu;
+                    dataGridView1.Rows[fila].Cells[1].Value = caja._saldo;
+
+                }
             }
         }
 
@@ -138,6 +148,9 @@ namespace TP1
                     // currentCustomer.Id can be obtained through the CurrencyManager of your BindingSource object used to data bind your data to your Windows form controls.
 
                     break;
+                case 7:
+                    cargaUsuarios();
+                    break;
             }
         }
 
@@ -151,10 +164,18 @@ namespace TP1
 
             comboBoxPlazo.Items.Clear();
             comboBoxPlazo.Refresh();
+            List<CajaDeAhorro> ca = null;
 
-            foreach (CajaDeAhorro caja in banco.buscarCajasUsuario())
+            if(banco.esAdmin())
             {
-                comboBoxPlazo.Items.Add(caja._cbu);
+                ca = banco.buscarCajasAdmin();
+            } else { ca = banco.buscarCajasUsuario(); }
+
+            if(ca != null) { 
+                foreach (CajaDeAhorro caja in ca)
+                {
+                    comboBoxPlazo.Items.Add(caja._cbu);
+                }
             }
         }
 
@@ -201,18 +222,24 @@ namespace TP1
             dataGridPlazo.Rows.Clear();
             dataGridPlazo.Refresh();
 
-            foreach (PlazoFijo pf in banco.buscarPlazosFijosUsuario())
+            List<PlazoFijo> listPf = null;
+
+            if (banco.esAdmin())
             {
+                listPf = banco.buscarPlazosFijosAdmin();
+            } else { listPf = banco.buscarPlazosFijosUsuario(); }
 
-                fila = dataGridPlazo.Rows.Add();
-                dataGridPlazo.Rows[fila].Cells[0].Value = pf._id_plazoFijo;
-                //dataGridPlazo.Rows[fila].Cells[1].Value = pf._id_usuario;
-                dataGridPlazo.Rows[fila].Cells[1].Value = pf._monto;
-                //dataGridPlazo.Rows[fila].Cells[2].Value = pf._fechaIni;
-                dataGridPlazo.Rows[fila].Cells[3].Value = pf._fechaFin;
-                dataGridPlazo.Rows[fila].Cells[4].Value = pf._tasa;
-                //dataGridPlazo.Rows[fila].Cells[6].Value = int.Parse(pf._pagado);
+            if (listPf != null) { 
+                foreach (PlazoFijo pf in listPf)
+                {
 
+                    fila = dataGridPlazo.Rows.Add();
+                    dataGridPlazo.Rows[fila].Cells[0].Value = pf._id_plazoFijo;
+                    dataGridPlazo.Rows[fila].Cells[1].Value = pf._monto;
+                    dataGridPlazo.Rows[fila].Cells[3].Value = pf._fechaFin;
+                    dataGridPlazo.Rows[fila].Cells[4].Value = pf._tasa;
+
+                }
             }
         }
 
@@ -242,9 +269,20 @@ namespace TP1
             cBox_caja_ahorro.Items.Clear();
             cBox_caja_ahorro.Refresh();
 
-            foreach (CajaDeAhorro caja in banco.buscarCajasUsuario())
+            List<CajaDeAhorro> ca = null;
+
+            if (banco.esAdmin())
             {
-                cBox_caja_ahorro.Items.Add(caja._cbu);
+                ca = banco.buscarCajasAdmin();
+            }
+            else { ca = banco.buscarCajasUsuario(); }
+
+            if (ca != null)
+            {
+                foreach (CajaDeAhorro caja in ca)
+                {
+                    cBox_caja_ahorro.Items.Add(caja._cbu);
+                }
             }
 
         }
@@ -254,9 +292,20 @@ namespace TP1
             cbx_lista_CajasAhorro.Items.Clear();
             cbx_lista_CajasAhorro.Refresh();
 
-            foreach (CajaDeAhorro caja in banco.buscarCajasUsuario())
+            List<CajaDeAhorro> ca = null;
+
+            if (banco.esAdmin())
             {
-                cbx_lista_CajasAhorro.Items.Add(caja._cbu);
+                ca = banco.buscarCajasAdmin();
+            }
+            else { ca = banco.buscarCajasUsuario(); }
+
+            if (ca != null)
+            {
+                foreach (CajaDeAhorro caja in ca)
+                {
+                    cbx_lista_CajasAhorro.Items.Add(caja._cbu);
+                }
             }
 
         }
@@ -280,14 +329,23 @@ namespace TP1
             dataGView_Tarjetas.Rows.Clear();
             dataGView_Tarjetas.Refresh();
 
-            foreach (TarjetaDeCredito tarjeta in banco.buscarTarjetas())
+            List<TarjetaDeCredito> tc = null;
+
+            if(banco.esAdmin())
             {
+                tc = banco.buscarTarjetasAdmin();
+            } else { tc = banco.buscarTarjetas(); }
 
-                fila = dataGView_Tarjetas.Rows.Add();
-                dataGView_Tarjetas.Rows[fila].Cells[0].Value = tarjeta._numero;
-                dataGView_Tarjetas.Rows[fila].Cells[1].Value = tarjeta._limite;
-                dataGView_Tarjetas.Rows[fila].Cells[2].Value = tarjeta._consumos;
+            if(tc != null) { 
+                foreach (TarjetaDeCredito tarjeta in tc)
+                {
 
+                    fila = dataGView_Tarjetas.Rows.Add();
+                    dataGView_Tarjetas.Rows[fila].Cells[0].Value = tarjeta._numero;
+                    dataGView_Tarjetas.Rows[fila].Cells[1].Value = tarjeta._limite;
+                    dataGView_Tarjetas.Rows[fila].Cells[2].Value = tarjeta._consumos;
+
+                }
             }
 
         }
@@ -318,9 +376,20 @@ namespace TP1
             comboBox1.Items.Clear();
             comboBox1.Refresh();
 
-            foreach (CajaDeAhorro caja in banco.buscarCajasUsuario())
+            List<CajaDeAhorro> ca = null;
+
+            if (banco.esAdmin())
             {
-                comboBox1.Items.Add(caja._cbu);
+                ca = banco.buscarCajasAdmin();
+            }
+            else { ca = banco.buscarCajasUsuario(); }
+
+            if (ca != null)
+            {
+                foreach (CajaDeAhorro caja in ca)
+                {
+                    comboBox1.Items.Add(caja._cbu);
+                }
             }
 
         }
@@ -398,9 +467,20 @@ namespace TP1
             comboBox2.Items.Clear();
             comboBox2.Refresh();
 
-            foreach (CajaDeAhorro caja in banco.buscarCajasUsuario())
+            List<CajaDeAhorro> ca = null;
+
+            if (banco.esAdmin())
             {
-                comboBox2.Items.Add(caja._cbu);
+                ca = banco.buscarCajasAdmin();
+            }
+            else { ca = banco.buscarCajasUsuario(); }
+
+            if (ca != null)
+            {
+                foreach (CajaDeAhorro caja in ca)
+                {
+                    comboBox2.Items.Add(caja._cbu);
+                }
             }
         }
 
@@ -443,9 +523,18 @@ namespace TP1
             cBox_tarjeta.Items.Clear();
             cBox_tarjeta.Refresh();
 
-            foreach (TarjetaDeCredito tc in banco.buscarTarjetas())
+            List<TarjetaDeCredito> tc = null;
+
+            if (banco.esAdmin())
             {
-                cBox_tarjeta.Items.Add(tc._numero);
+                tc = banco.buscarTarjetasAdmin();
+            } else { tc = banco.buscarTarjetasUsuario(); }
+
+            if(tc != null) { 
+                foreach (TarjetaDeCredito t in banco.buscarTarjetas())
+                {
+                    cBox_tarjeta.Items.Add(t._numero);
+                }
             }
 
         }
@@ -499,21 +588,33 @@ namespace TP1
 
         public void cargaListaPagos(bool pagado)
         {
+
+            List<Pago> p = null;
+
+            if (banco.esAdmin())
+            {
+                p = banco.buscarPagosAdmin(pagado);
+
+            }
+            else { p = banco.buscarPagosUsuario(pagado); }
+
             if (!pagado)
             {
                 dataGridView3.Rows.Clear();
                 dataGridView3.Refresh();
 
                 int fila;
-                foreach (Pago pago in banco.buscarPagosUsuario(pagado))
-                {
+                if (p!=null) { 
+                    foreach (Pago pago in p)
+                    {
 
-                    fila = dataGridView3.Rows.Add();
-                    dataGridView3.Rows[fila].Cells[0].Value = pago._id_pago;
-                    dataGridView3.Rows[fila].Cells[1].Value = pago._metodo;
-                    dataGridView3.Rows[fila].Cells[2].Value = pago._detalle;
-                    dataGridView3.Rows[fila].Cells[3].Value = pago._monto;
+                        fila = dataGridView3.Rows.Add();
+                        dataGridView3.Rows[fila].Cells[0].Value = pago._id_pago;
+                        dataGridView3.Rows[fila].Cells[1].Value = pago._metodo;
+                        dataGridView3.Rows[fila].Cells[2].Value = pago._detalle;
+                        dataGridView3.Rows[fila].Cells[3].Value = pago._monto;
 
+                    }
                 }
             }
             else
@@ -523,16 +624,19 @@ namespace TP1
                 dataGridView4_pagos_pendientes.Refresh();
 
                 int fila;
-                foreach (Pago pago in banco.buscarPagosUsuario(pagado))
+                if (p!=null)
                 {
+                    foreach (Pago pago in p)
+                    {
 
-                    fila = dataGridView4_pagos_pendientes.Rows.Add();
-                    dataGridView4_pagos_pendientes.Rows[fila].Cells[0].Value = pago._id_pago;
-                    dataGridView4_pagos_pendientes.Rows[fila].Cells[1].Value = pago._metodo;
-                    dataGridView4_pagos_pendientes.Rows[fila].Cells[2].Value = pago._detalle;
-                    dataGridView4_pagos_pendientes.Rows[fila].Cells[3].Value = pago._monto;
+                        fila = dataGridView4_pagos_pendientes.Rows.Add();
+                        dataGridView4_pagos_pendientes.Rows[fila].Cells[0].Value = pago._id_pago;
+                        dataGridView4_pagos_pendientes.Rows[fila].Cells[1].Value = pago._metodo;
+                        dataGridView4_pagos_pendientes.Rows[fila].Cells[2].Value = pago._detalle;
+                        dataGridView4_pagos_pendientes.Rows[fila].Cells[3].Value = pago._monto;
 
 
+                    }
                 }
 
             }
@@ -633,14 +737,178 @@ namespace TP1
 
             comboBox3_movimientos.Items.Clear();
             comboBox3_movimientos.Refresh();
-            List<CajaDeAhorro> listaCajaAhorro = new List<CajaDeAhorro>();
-            listaCajaAhorro = banco.buscarCajasUsuario();
 
-            foreach (CajaDeAhorro caja in listaCajaAhorro)
+            List<CajaDeAhorro> ca = null;
+
+            if (banco.esAdmin())
             {
-                comboBox3_movimientos.Items.Add(caja._cbu);
+                ca = banco.buscarCajasAdmin();
+            }
+            else { ca = banco.buscarCajasUsuario(); }
+
+            if (ca != null)
+            {
+                foreach (CajaDeAhorro caja in ca)
+                {
+                    comboBox3_movimientos.Items.Add(caja._cbu);
+                }
             }
 
+        }
+
+        private void cargaUsuarios()
+        {
+            int fila;
+            dataGridUsuarios.Rows.Clear();
+            dataGridUsuarios.Refresh();
+
+            List<Usuario> lista = banco.listarUsuarios();
+
+            if(lista!=null)
+            { 
+                foreach (Usuario u in lista)
+                {
+
+                    fila = dataGridUsuarios.Rows.Add();
+                    dataGridUsuarios.Rows[fila].Cells[0].Value = u._id_usuario;
+                    dataGridUsuarios.Rows[fila].Cells[1].Value = u._dni;
+                    dataGridUsuarios.Rows[fila].Cells[2].Value = u._nombre;
+                    dataGridUsuarios.Rows[fila].Cells[3].Value = u._apellido;
+
+                }
+            }
+        }
+
+        private void dataGridUsuarios_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+            if (Banco.IsNumeric(dataGridUsuarios.CurrentCell.Value.ToString()))
+            {
+                this.celda = int.Parse(dataGridUsuarios.CurrentCell.Value.ToString());
+            }
+            else
+            {
+                MessageBox.Show("Debe seleccionar un ID de pago válido");
+            }
+        }
+
+        private void buttonDesbloquear_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if(banco.desbloquearUsuario(this.celda))
+                {
+                    MessageBox.Show("Usuario desbloqueado");
+                } else
+                {
+                    MessageBox.Show("Ocurrio un error al desbloquear usuario");
+                }
+            }
+            catch(Exception ex) 
+            {
+                MessageBox.Show("Ocurrio un error al desbloquear usuario: " + ex.Message);
+            }
+        }
+
+        private void btn_eliminarUsuario_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (banco.eliminarUsuario(this.celda))
+                {
+                    MessageBox.Show("Usuario eliminado");
+                    cargaUsuarios();
+                }
+                else
+                {
+                    MessageBox.Show("Ocurrio un error al eliminar usuario");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocurrio un error al eliminar usuario: " + ex.Message);
+            }
+
+        }
+
+
+        private void comBox_cbu_Traslado_Saldo_Click(object sender, EventArgs e)
+        {
+            comBox_cbu_Traslado_Saldo.Items.Clear();
+            comBox_cbu_Traslado_Saldo.Refresh();
+
+            List<CajaDeAhorro> ca = null;
+
+            if (banco.esAdmin())
+            {
+                ca = banco.buscarCajasAdmin();
+            }
+            else { ca = banco.buscarCajasUsuario(); }
+
+            if (ca != null)
+            {
+                foreach (CajaDeAhorro caja in ca)
+                {
+                    comBox_cbu_Traslado_Saldo.Items.Add(caja._cbu);
+                }
+            }
+
+        }
+
+        //comBox_id_usuario_Traslado
+        private void comBox_id_usuario_Traslado_Click(object sender, EventArgs e)
+        {
+            comBox_id_usuario_Traslado.Items.Clear();
+            comBox_id_usuario_Traslado.Refresh();
+
+            foreach (Usuario u in banco.listarUsuarios())
+            {
+                comBox_id_usuario_Traslado.Items.Add(u._id_usuario);
+            }
+
+        }
+
+        private void btn_elimina_Caja_Click(object sender, EventArgs e)
+        {
+            if (comBox_cbu_Traslado_Saldo.Text != "") { 
+                if(comBox_id_usuario_Traslado.Text != "") { 
+                    try
+                    {
+                        if (banco.eliminarTitularCaja(int.Parse(comBox_id_usuario_Traslado.Text), comBox_cbu_Traslado_Saldo.Text)) 
+                        {
+                            MessageBox.Show("Titular eliminado correctamente");
+                        } else { MessageBox.Show("El titular a eliminar debe ser del cbu seleccionado"); }
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show("Ocurrió un error al eliminar titular de la cuenta: " + ex.Message);
+                    }
+                } else { MessageBox.Show("Debe seleccionar un ID de titular"); }
+            } else { MessageBox.Show("Debe seleccionar un CBU"); }
+        }
+
+        private void btn_traslada_Caja_Click(object sender, EventArgs e)
+        {
+            if (comBox_cbu_Traslado_Saldo.Text != "")
+            {
+                if (comBox_id_usuario_Traslado.Text != "")
+                {
+                    try
+                    {
+                        if (banco.agregarTitularCaja(int.Parse(comBox_id_usuario_Traslado.Text), comBox_cbu_Traslado_Saldo.Text))
+                        {
+                            MessageBox.Show("Titular agregado correctamente");
+                        }
+                        else { MessageBox.Show("Ocurrió un error al agregar titular a la cuenta"); }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ocurrió un error al agregar titular a la cuenta: " + ex.Message);
+                    }
+                }
+                else { MessageBox.Show("Debe seleccionar un ID de titular"); }
+            }
+            else { MessageBox.Show("Debe seleccionar un CBU"); }
         }
     }
 }

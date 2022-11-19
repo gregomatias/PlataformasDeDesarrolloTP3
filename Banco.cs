@@ -34,6 +34,7 @@ namespace TP1
                 contexto.usuarios.Include(u => u._plazosFijos).Load();
                 contexto.usuarios.Include(u => u._tarjetas).Load();
                 contexto.usuarios.Include(u => u._pagos).Load();
+                contexto.cajas.Include(u => u._movimientos).Load();
             }
             catch (Exception)
             {
@@ -183,6 +184,7 @@ namespace TP1
                         usuarioLogueado._plazosFijos.Add(plazoFijo);
                         contexto.usuarios.Update(usuarioLogueado); 
                         contexto.SaveChanges();
+                        AltaMovimiento(cbu, "Alta de plazo fijo", plazoFijo._monto);
                         return true;
                     }
                     catch (Exception ex) {
@@ -224,7 +226,7 @@ namespace TP1
                         caja._saldo = caja._saldo - monto;
                         contexto.usuarios.Update(usuario);
                         contexto.SaveChanges();
-                        AltaMovimiento(caja, "Retiro en cuenta", monto);
+                        
                         return true;
                     }
                     else
@@ -272,6 +274,19 @@ namespace TP1
             foreach (Usuario u in contexto.usuarios)
             {
                 if (u._dni == usuario._dni)
+                {
+                    return u._tarjetas;
+                }
+            }
+
+            return null;
+        }
+
+        public List<TarjetaDeCredito> buscarTarjetasUsuario()
+        {
+            foreach (Usuario u in contexto.usuarios)
+            {
+                if (usuarioLogueado._dni == u._dni)
                 {
                     return u._tarjetas;
                 }
@@ -361,10 +376,6 @@ namespace TP1
 
 
         }
-
-
-
-
 
         public bool confirmarAltaPago(double monto, string metodo, long numero)
         {
@@ -567,10 +578,14 @@ namespace TP1
         }
 
 
-
         public List<PlazoFijo> buscarPlazosFijosUsuario()
         {
             return this.buscarListaPF(usuarioLogueado);
+        }
+
+        public List<PlazoFijo> buscarPlazosFijosAdmin()
+        {
+            return contexto.plazosFijos.ToList();
         }
 
         public bool bajaPlazoFijo(int id)
@@ -590,9 +605,10 @@ namespace TP1
             return this.buscarTarjetasUsuario(usuarioLogueado);
         }
 
-
-
-
+        public List<TarjetaDeCredito> buscarTarjetasAdmin()
+        {
+            return contexto.tarjetas.ToList();
+        }
 
 
         public bool PagarTarjeta(string numero, string cbu)
@@ -638,7 +654,11 @@ namespace TP1
         {
             try
             {
-                return this.afectarSaldoCA(usuarioLogueado, cbu, monto);
+                if(this.afectarSaldoCA(usuarioLogueado, cbu, monto))
+                { 
+                    AltaMovimiento(cbu, "Retiro en cuenta", monto);
+                    return true;
+                } else { return false; }
 
             }
             catch (Exception ex)
@@ -683,13 +703,20 @@ namespace TP1
             }
         }
 
-
-
-
-
         public List<Pago> buscarPagosUsuario(bool pagado)
         {
             return this.buscarPagosUsuario(usuarioLogueado, pagado);
+        }
+
+        public List<Pago> buscarPagosAdmin(bool pagado)
+        {
+            List<Pago> lista = new List<Pago>();
+            foreach(Pago p in contexto.pagos)
+            {
+                if (p._pagado==pagado)
+                    lista.Add(p);
+            }
+            return lista;
         }
 
         public static bool IsNumeric(string input)
@@ -718,9 +745,6 @@ namespace TP1
         {
             try
             {
-
-
-
                 Movimiento movimiento = new Movimiento(caja._id_caja, detalle, monto, DateTime.Now);
                 //contexto.movimientos.Add(movimiento);
                 caja._movimientos.Add(movimiento);
@@ -728,9 +752,22 @@ namespace TP1
                 contexto.usuarios.Update(usuarioLogueado);
                 contexto.SaveChanges();
 
+                return true;
+            }
+            catch (Exception ex) { return false; }
+        }
 
-
-
+        public bool AltaMovimiento(string cbu, string detalle, double monto)
+        {
+            try
+            {
+                CajaDeAhorro? caja = contexto.cajas.Where(caja => caja._cbu == cbu).FirstOrDefault();
+                Movimiento movimiento = new Movimiento(caja._id_caja, detalle, monto, DateTime.Now);
+                //contexto.movimientos.Add(movimiento);
+                caja._movimientos.Add(movimiento);
+                contexto.cajas.Update(caja);
+                contexto.usuarios.Update(usuarioLogueado);
+                contexto.SaveChanges();
 
                 return true;
             }
@@ -777,6 +814,146 @@ namespace TP1
 
 
             return listaStringMovimientosFiltrados;
+        }
+
+        public List<Usuario> listarUsuarios()
+        {
+            List<Usuario> lista = new List<Usuario>();
+            foreach(Usuario u in contexto.usuarios)
+            {
+                if (u!=usuarioLogueado)
+                {
+                    lista.Add(u);
+                }
+            }
+            return lista;
+
+        }
+
+        public bool eliminarUsuario(int id)
+        {
+            Usuario usuarioAux = null;
+
+            foreach(Usuario u in contexto.usuarios)
+            {
+                if(u._id_usuario==id)
+                {
+                    usuarioAux= u;
+                }
+            }
+
+            try { 
+                contexto.usuarios.Remove(usuarioAux);
+                contexto.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocurrió un error eliminando el usuario");
+                return false;
+            }
+        }
+
+        public bool desbloquearUsuario(int id)
+        {
+            Usuario usuarioAux = null;
+
+            foreach (Usuario u in contexto.usuarios)
+            {
+                if (u._id_usuario==id)
+                {
+                    usuarioAux= u;
+                }
+            }
+
+            try
+            {
+                usuarioAux._bloqueado = false;
+                contexto.usuarios.Update(usuarioAux);
+                contexto.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocurrió un error eliminando el usuario");
+                return false;
+            }
+        }
+
+        public List<CajaDeAhorro> buscarCajasAdmin()
+        {
+            return contexto.cajas.ToList();
+        }
+
+        public bool eliminarTitularCaja(int id, string cbu)
+        {
+            CajaDeAhorro caja = null;
+            Usuario usuario = null;
+            foreach(CajaDeAhorro ca in contexto.cajas)
+            {
+                if (ca._cbu.Equals(cbu))
+                {
+                    foreach(Usuario u in ca.titulares)
+                    {
+                        if(u._id_usuario==id)
+                        { 
+                            caja= ca;
+                            usuario = u;
+                        }
+
+                    }
+                }
+            }
+
+            if (caja!=null)
+            {
+                //caja.titulares.Remove(usuario);
+                usuario.cajas.Remove(caja);
+                contexto.usuarios.Update(usuario);
+                contexto.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+
+        public bool agregarTitularCaja(int id, string cbu)
+        {
+            CajaDeAhorro caja = null;
+            Usuario usuario = null;
+            foreach (CajaDeAhorro ca in contexto.cajas)
+            {
+                if (ca._cbu.Equals(cbu))
+                {
+                    caja= ca;
+                }
+            }
+            foreach (Usuario u in contexto.usuarios)
+            {
+                if (u._id_usuario==id)
+                {
+                    usuario = u;
+                }
+
+            }
+
+            if (caja!=null && usuario!=null)
+            {
+                usuario.cajas.Add(caja);
+                contexto.usuarios.Update(usuario);
+                contexto.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+
+        public string obtenerNombre()
+        {
+            return usuarioLogueado._apellido + ", " + usuarioLogueado._nombre;
+        }
+
+        public bool esAdmin()
+        {
+            return usuarioLogueado._esUsuarioAdmin;
         }
 
 

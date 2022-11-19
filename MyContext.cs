@@ -15,6 +15,8 @@ namespace TP1
 
         public DbSet<TarjetaDeCredito> tarjetas { get; set; }
         public DbSet<Pago> pagos { get; set; }
+
+        public DbSet<PlazoFijo> plazosFijos { get; set; }
         public DbSet<Movimiento> movimientos { get; set; }
 
 
