@@ -176,7 +176,7 @@ namespace TP1
             try
             {
 
-                if (afectarSaldoCA(usuarioLogueado, cbu, plazoFijo._monto))
+                if (afectarSaldoCA(cbu, plazoFijo._monto))
                 {
                  
                     try
@@ -215,19 +215,17 @@ namespace TP1
         }
 
 
-        public bool afectarSaldoCA(Usuario usuario, string cbu, double monto)
+        public bool afectarSaldoCA(string cbu, double monto)
         {
-            foreach (CajaDeAhorro caja in usuario.cajas)
+            CajaDeAhorro ca = null;
+
+            foreach (CajaDeAhorro caja in contexto.cajas)
             {
                 if (caja._cbu.Equals(cbu))
                 {
                     if (caja._saldo >= monto)
                     {
-                        caja._saldo = caja._saldo - monto;
-                        contexto.usuarios.Update(usuario);
-                        contexto.SaveChanges();
-                        
-                        return true;
+                        ca = caja;
                     }
                     else
                     {
@@ -236,7 +234,18 @@ namespace TP1
                 }
             }
 
-            return false;
+            try { 
+                ca._saldo = ca._saldo - monto;
+                contexto.cajas.Update(ca);
+                contexto.SaveChanges();
+                return true;
+            } 
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocurrio un error: " + ex.Message);
+                return false;
+            }
+
         }
 
         public bool eliminarPlazoFijo(Usuario usuario, int id)
@@ -654,7 +663,7 @@ namespace TP1
         {
             try
             {
-                if(this.afectarSaldoCA(usuarioLogueado, cbu, monto))
+                if(this.afectarSaldoCA(cbu, monto))
                 { 
                     AltaMovimiento(cbu, "Retiro en cuenta", monto);
                     return true;
