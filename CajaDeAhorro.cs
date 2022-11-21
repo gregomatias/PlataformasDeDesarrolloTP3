@@ -28,7 +28,7 @@ namespace TP1
 
         }
 
-        public CajaDeAhorro(int id,string cbu, int usuario,double saldo)
+        public CajaDeAhorro(int id,string cbu, int usuario, double saldo)
         {
             _id_caja = id;
             _cbu = cbu;

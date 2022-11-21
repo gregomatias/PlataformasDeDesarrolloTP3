@@ -101,12 +101,10 @@ namespace TP1
             dataGridView1.Rows.Clear();
             dataGridView1.Refresh();
             List<CajaDeAhorro> lista = null;
-            if(banco.esAdmin())
-            {
-                lista = banco.buscarCajasAdmin();
-            } else { lista = banco.buscarCajasUsuario(); }
 
-            if(lista!=null)
+            lista = banco.MostrarCajasDeAhorro();
+
+            if (lista!=null)
             { 
                 foreach (CajaDeAhorro caja in lista)
                 {
@@ -166,12 +164,11 @@ namespace TP1
             comboBoxPlazo.Refresh();
             List<CajaDeAhorro> ca = null;
 
-            if(banco.esAdmin())
-            {
-                ca = banco.buscarCajasAdmin();
-            } else { ca = banco.buscarCajasUsuario(); }
+            ca = banco.MostrarCajasDeAhorro();
 
-            if(ca != null) { 
+
+
+            if (ca != null) { 
                 foreach (CajaDeAhorro caja in ca)
                 {
                     comboBoxPlazo.Items.Add(caja._cbu);
@@ -271,11 +268,10 @@ namespace TP1
 
             List<CajaDeAhorro> ca = null;
 
-            if (banco.esAdmin())
-            {
-                ca = banco.buscarCajasAdmin();
-            }
-            else { ca = banco.buscarCajasUsuario(); }
+     
+                ca = banco.MostrarCajasDeAhorro();
+
+
 
             if (ca != null)
             {
@@ -294,13 +290,10 @@ namespace TP1
 
             List<CajaDeAhorro> ca = null;
 
-            if (banco.esAdmin())
-            {
-                ca = banco.buscarCajasAdmin();
-            }
-            else { ca = banco.buscarCajasUsuario(); }
+  
+                ca = banco.MostrarCajasDeAhorro();
 
-            if (ca != null)
+                if (ca != null)
             {
                 foreach (CajaDeAhorro caja in ca)
                 {
@@ -373,16 +366,14 @@ namespace TP1
 
         private void comboBox1_Click(object sender, EventArgs e)
         {
+
             comboBox1.Items.Clear();
             comboBox1.Refresh();
 
             List<CajaDeAhorro> ca = null;
 
-            if (banco.esAdmin())
-            {
-                ca = banco.buscarCajasAdmin();
-            }
-            else { ca = banco.buscarCajasUsuario(); }
+  
+                ca = banco.MostrarCajasDeAhorro();
 
             if (ca != null)
             {
@@ -391,6 +382,7 @@ namespace TP1
                     comboBox1.Items.Add(caja._cbu);
                 }
             }
+            txtb_monto.Enabled = true;
 
         }
 
@@ -432,6 +424,7 @@ namespace TP1
 
         private void btn_depositar_Click(object sender, EventArgs e)
         {
+             
             try { 
                 if (txtb_monto.Text != "" && comboBox1.SelectedItem.ToString() !="")
                 {
@@ -469,11 +462,9 @@ namespace TP1
 
             List<CajaDeAhorro> ca = null;
 
-            if (banco.esAdmin())
-            {
-                ca = banco.buscarCajasAdmin();
-            }
-            else { ca = banco.buscarCajasUsuario(); }
+   
+                ca = banco.MostrarCajasDeAhorro();
+
 
             if (ca != null)
             {
@@ -509,7 +500,7 @@ namespace TP1
                     }
 
                 }
-                else { MessageBox.Show("Monto debe ser mayor a cero"); }
+                else { MessageBox.Show("Monto debe ser mayor a cero y debe seleccionar caja de ahorro"); }
 
 
             }
@@ -740,11 +731,9 @@ namespace TP1
 
             List<CajaDeAhorro> ca = null;
 
-            if (banco.esAdmin())
-            {
-                ca = banco.buscarCajasAdmin();
-            }
-            else { ca = banco.buscarCajasUsuario(); }
+      
+                ca = banco.MostrarCajasDeAhorro();
+
 
             if (ca != null)
             {
@@ -839,11 +828,9 @@ namespace TP1
 
             List<CajaDeAhorro> ca = null;
 
-            if (banco.esAdmin())
-            {
-                ca = banco.buscarCajasAdmin();
-            }
-            else { ca = banco.buscarCajasUsuario(); }
+      
+                ca = banco.MostrarCajasDeAhorro();
+
 
             if (ca != null)
             {

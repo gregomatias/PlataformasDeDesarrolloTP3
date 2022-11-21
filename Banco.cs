@@ -35,6 +35,15 @@ namespace TP1
                 contexto.usuarios.Include(u => u._tarjetas).Load();
                 contexto.usuarios.Include(u => u._pagos).Load();
                 contexto.cajas.Include(u => u._movimientos).Load();
+
+               if(contexto.usuarios.Count() == 0){
+                    this.agregarUsuario(555, "MATIAS", "GREGO", "M@G", "1", false, true, 0);
+                    this.agregarUsuario(444, "ALAN", "RIVA", "A@R", "1", false, false, 0);
+                    this.agregarUsuario(333, "NICOLAS", "VILLEGAS", "N@V", "1", false, false, 0);
+                }
+               
+
+
             }
             catch (Exception)
             {
@@ -147,27 +156,15 @@ namespace TP1
                 usuario.cajas.Add(nuevo);
                 contexto.usuarios.Update(usuario);
 
+
+
                 contexto.SaveChanges();
                 return true;
             }
             catch (Exception ex) { MessageBox.Show("agregarCA: " + ex.Message + ex.InnerException.Message); return false; }
         }
 
-        public ICollection<CajaDeAhorro> buscarListaCA(Usuario usuario)
-        {
-            ICollection<CajaDeAhorro> lista = new List<CajaDeAhorro>();
 
-            foreach (Usuario u in contexto.usuarios)
-            {
-                if (u._dni == usuario._dni)
-                {
-                    lista = u.cajas;
-                }
-            }
-
-            return lista;
-
-        }
 
         public bool AltaPlazoFijo(double monto, double tasa, string cbu)
         {
@@ -178,18 +175,20 @@ namespace TP1
 
                 if (afectarSaldoCA(cbu, plazoFijo._monto))
                 {
-                 
+
                     try
                     {
                         usuarioLogueado._plazosFijos.Add(plazoFijo);
-                        contexto.usuarios.Update(usuarioLogueado); 
+                        contexto.usuarios.Update(usuarioLogueado);
                         contexto.SaveChanges();
                         AltaMovimiento(cbu, "Alta de plazo fijo", plazoFijo._monto);
                         return true;
                     }
-                    catch (Exception ex) {
-                        MessageBox.Show("agregarCA: " + ex.Message + ex.InnerException.Message); 
-                        return false; }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("agregarCA: " + ex.Message + ex.InnerException.Message);
+                        return false;
+                    }
                 }
 
 
@@ -234,12 +233,13 @@ namespace TP1
                 }
             }
 
-            try { 
+            try
+            {
                 ca._saldo = ca._saldo - monto;
                 contexto.cajas.Update(ca);
                 contexto.SaveChanges();
                 return true;
-            } 
+            }
             catch (Exception ex)
             {
                 MessageBox.Show("Ocurrio un error: " + ex.Message);
@@ -326,7 +326,7 @@ namespace TP1
                 AltaMovimiento(ca, "Deposito en cuenta", monto);
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Ocurrió un error al realizar el depósito: " + ex.Message);
                 return false;
@@ -590,10 +590,29 @@ namespace TP1
 
         }
 
-        public List<CajaDeAhorro> buscarCajasUsuario()
+
+        public List<CajaDeAhorro> MostrarCajasDeAhorro()
         {
-            return this.buscarListaCA(usuarioLogueado).ToList();
+            Usuario? us = contexto.usuarios.Where(u => u._dni == usuarioLogueado._dni).FirstOrDefault();
+            List<CajaDeAhorro> lista = new List<CajaDeAhorro>();
+            if (us != null)
+
+            {
+                if (us._esUsuarioAdmin == false)
+                {
+                    lista= us.cajas.ToList();
+                }
+                else
+                {
+                    lista= contexto.cajas.ToList();
+                }
+                
+            }
+           
+            return lista;
+
         }
+
 
 
         public List<PlazoFijo> buscarPlazosFijosUsuario()
@@ -672,11 +691,12 @@ namespace TP1
         {
             try
             {
-                if(this.afectarSaldoCA(cbu, monto))
-                { 
+                if (this.afectarSaldoCA(cbu, monto))
+                {
                     AltaMovimiento(cbu, "Retiro en cuenta", monto);
                     return true;
-                } else { return false; }
+                }
+                else { return false; }
 
             }
             catch (Exception ex)
@@ -729,9 +749,9 @@ namespace TP1
         public List<Pago> buscarPagosAdmin(bool pagado)
         {
             List<Pago> lista = new List<Pago>();
-            foreach(Pago p in contexto.pagos)
+            foreach (Pago p in contexto.pagos)
             {
-                if (p._pagado==pagado)
+                if (p._pagado == pagado)
                     lista.Add(p);
             }
             return lista;
@@ -797,21 +817,19 @@ namespace TP1
         {
 
 
-       
-
 
 
             List<List<string>> listaStringMovimientosFiltrados = new List<List<string>>();
             //Busca Id de caja de ahoro
-            CajaDeAhorro? caja = usuarioLogueado.cajas.Where(caja => caja._cbu == cbuCaja).FirstOrDefault();
+            CajaDeAhorro? caja = contexto.cajas.Where(caja => caja._cbu == cbuCaja).FirstOrDefault();
 
-            MessageBox.Show(caja.ToString());
 
-            foreach (Movimiento movimiento in contexto.movimientos)
+
+            foreach (Movimiento movimiento in caja._movimientos)
             {
                 MessageBox.Show(movimiento.ToString());
 
-                if (caja._id_caja == movimiento._id_CajaDeAhorro) { 
+
 
                 if (movimiento._detalle == detalle || movimiento._fecha.Date == fecha.Value.Date || movimiento._monto == monto)
 
@@ -822,7 +840,7 @@ namespace TP1
 
                 }
 
-                }
+
 
             }
 
@@ -837,9 +855,9 @@ namespace TP1
         public List<Usuario> listarUsuarios()
         {
             List<Usuario> lista = new List<Usuario>();
-            foreach(Usuario u in contexto.usuarios)
+            foreach (Usuario u in contexto.usuarios)
             {
-                if (u!=usuarioLogueado)
+                if (u != usuarioLogueado)
                 {
                     lista.Add(u);
                 }
@@ -852,15 +870,16 @@ namespace TP1
         {
             Usuario usuarioAux = null;
 
-            foreach(Usuario u in contexto.usuarios)
+            foreach (Usuario u in contexto.usuarios)
             {
-                if(u._id_usuario==id)
+                if (u._id_usuario == id)
                 {
-                    usuarioAux= u;
+                    usuarioAux = u;
                 }
             }
 
-            try { 
+            try
+            {
                 contexto.usuarios.Remove(usuarioAux);
                 contexto.SaveChanges();
                 return true;
@@ -878,9 +897,9 @@ namespace TP1
 
             foreach (Usuario u in contexto.usuarios)
             {
-                if (u._id_usuario==id)
+                if (u._id_usuario == id)
                 {
-                    usuarioAux= u;
+                    usuarioAux = u;
                 }
             }
 
@@ -898,24 +917,21 @@ namespace TP1
             }
         }
 
-        public List<CajaDeAhorro> buscarCajasAdmin()
-        {
-            return contexto.cajas.ToList();
-        }
+
 
         public bool eliminarTitularCaja(int id, string cbu)
         {
             CajaDeAhorro caja = null;
             Usuario usuario = null;
-            foreach(CajaDeAhorro ca in contexto.cajas)
+            foreach (CajaDeAhorro ca in contexto.cajas)
             {
                 if (ca._cbu.Equals(cbu))
                 {
-                    foreach(Usuario u in ca.titulares)
+                    foreach (Usuario u in ca.titulares)
                     {
-                        if(u._id_usuario==id)
-                        { 
-                            caja= ca;
+                        if (u._id_usuario == id)
+                        {
+                            caja = ca;
                             usuario = u;
                         }
 
@@ -923,7 +939,7 @@ namespace TP1
                 }
             }
 
-            if (caja!=null)
+            if (caja != null)
             {
                 //caja.titulares.Remove(usuario);
                 usuario.cajas.Remove(caja);
@@ -942,19 +958,19 @@ namespace TP1
             {
                 if (ca._cbu.Equals(cbu))
                 {
-                    caja= ca;
+                    caja = ca;
                 }
             }
             foreach (Usuario u in contexto.usuarios)
             {
-                if (u._id_usuario==id)
+                if (u._id_usuario == id)
                 {
                     usuario = u;
                 }
 
             }
 
-            if (caja!=null && usuario!=null)
+            if (caja != null && usuario != null)
             {
                 usuario.cajas.Add(caja);
                 contexto.usuarios.Update(usuario);

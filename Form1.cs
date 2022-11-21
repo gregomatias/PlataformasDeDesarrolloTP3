@@ -25,7 +25,7 @@ namespace TP1
         {
             this.Show();
             try { 
-                formDeRegistro.Close();
+                //formDeRegistro.Close();
             } catch(Exception ex) { }
 
         }

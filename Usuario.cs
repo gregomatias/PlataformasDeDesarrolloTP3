@@ -109,13 +109,13 @@ namespace TP1
             set { bloqueado = value; }
         }
 
-        /*
-        public List<CajaDeAhorro> _Cajas
+        public override string ToString()
         {
-            get { return cajas; }
-            set { cajas = value; }
+            return "Id: " + _id_usuario + " Intentos: " + _intentosFallidos + " EsAdmin: " + _esUsuarioAdmin +
+                " QCajas:" + cajas.Count() + " QTarjetas:" + _tarjetas.Count() + " QPlazoFijos:" + _plazosFijos.Count() +
+                " QPagos:" + _pagos.Count();
         }
-        */
+
 
 
     }
