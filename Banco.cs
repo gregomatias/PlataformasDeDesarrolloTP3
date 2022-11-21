@@ -36,12 +36,13 @@ namespace TP1
                 contexto.usuarios.Include(u => u._pagos).Load();
                 contexto.cajas.Include(u => u._movimientos).Load();
 
-               if(contexto.usuarios.Count() == 0){
+                if (contexto.usuarios.Count() == 0)
+                {
                     this.agregarUsuario(555, "MATIAS", "GREGO", "M@G", "1", false, true, 0);
                     this.agregarUsuario(444, "ALAN", "RIVA", "A@R", "1", false, false, 0);
                     this.agregarUsuario(333, "NICOLAS", "VILLEGAS", "N@V", "1", false, false, 0);
                 }
-               
+
 
 
             }
@@ -200,18 +201,7 @@ namespace TP1
 
 
 
-        public List<PlazoFijo> buscarListaPF(Usuario usuario)
-        {
-            foreach (Usuario u in contexto.usuarios)
-            {
-                if (u._dni == usuario._dni)
-                {
-                    return u._plazosFijos;
-                }
-            }
 
-            return null;
-        }
 
 
         public bool afectarSaldoCA(string cbu, double monto)
@@ -451,41 +441,7 @@ namespace TP1
             }
         }
 
-        public List<Pago> buscarPagosUsuario(Usuario usuario, bool pagado)
-        {
-            List<Pago> pagoEstado = new List<Pago>();
-            List<Pago> lista = null;
 
-            foreach (Usuario u in contexto.usuarios)
-            {
-                if (u._dni == usuario._dni)
-                {
-                    lista = u._pagos;
-                }
-            }
-
-            foreach (Pago p in lista)
-            {
-                if (p._pagado == pagado)
-                    pagoEstado.Add(p);
-            }
-
-            return pagoEstado;
-        }
-
-        public Pago buscarPago(int id)
-        {
-            MessageBox.Show("ID: " + id);
-            foreach (Pago p in contexto.pagos)
-            {
-                if (p._id_pago == id)
-                {
-                    return p;
-                }
-            }
-            return null;
-
-        }
 
         public bool confirmarEstadoPago(int id)
         {
@@ -598,35 +554,49 @@ namespace TP1
             {
                 if (us._esUsuarioAdmin == false)
                 {
-                    lista= us.cajas.ToList();
+                    lista = us.cajas.ToList();
                 }
                 else
                 {
-                    lista= contexto.cajas.ToList();
+                    lista = contexto.cajas.ToList();
                 }
-                
+
             }
-           
+
             return lista;
 
         }
 
-
-
-        public List<PlazoFijo> buscarPlazosFijosUsuario()
+        public List<PlazoFijo> MostrarPlazoFijos()
         {
-            return this.buscarListaPF(usuarioLogueado);
+            Usuario? us = contexto.usuarios.Where(u => u._dni == usuarioLogueado._dni).FirstOrDefault();
+            List<PlazoFijo> lista = new List<PlazoFijo>();
+            if (us != null)
+
+            {
+                if (us._esUsuarioAdmin == false)
+                {
+                    lista = us._plazosFijos.ToList();
+                }
+                else
+                {
+                    lista = contexto.plazosFijos.ToList();
+                }
+
+            }
+
+            return lista;
         }
 
-        public List<PlazoFijo> buscarPlazosFijosAdmin()
-        {
-            return contexto.plazosFijos.ToList();
-        }
+
 
         public bool bajaPlazoFijo(int id)
         {
             return this.eliminarPlazoFijo(usuarioLogueado, id);
         }
+
+
+
 
         public bool altaTarjeta()
         {
@@ -732,21 +702,50 @@ namespace TP1
             }
         }
 
-        public List<Pago> buscarPagosUsuario(bool pagado)
-        {
-            return this.buscarPagosUsuario(usuarioLogueado, pagado);
-        }
 
-        public List<Pago> buscarPagosAdmin(bool pagado)
+        public List<Pago> MostrarPagos(bool Espagado)
         {
+
+            List<Pago> TotalPagosFiltroEstado = new List<Pago>();
+            TotalPagosFiltroEstado = contexto.pagos.Where(p => p._pagado == Espagado).ToList();
+
+
+            TotalPagosFiltroEstado = contexto.pagos.Where(p => p._pagado == Espagado).ToList();
+
             List<Pago> lista = new List<Pago>();
-            foreach (Pago p in contexto.pagos)
+            if (TotalPagosFiltroEstado != null)
+
             {
-                if (p._pagado == pagado)
-                    lista.Add(p);
+                if (usuarioLogueado._esUsuarioAdmin == false)
+                {
+                    List<Pago> PagosDelUsuarioFiltroEstado = new List<Pago>();
+                    PagosDelUsuarioFiltroEstado = TotalPagosFiltroEstado.Where(p => p._id_usuario == usuarioLogueado._id_usuario).ToList();
+                    lista = PagosDelUsuarioFiltroEstado;
+                }
+                else
+                {
+                    lista = TotalPagosFiltroEstado;
+                }
+
             }
+
             return lista;
         }
+
+        public Pago buscarPago(int id)
+        {
+            MessageBox.Show("ID: " + id);
+            foreach (Pago p in contexto.pagos)
+            {
+                if (p._id_pago == id)
+                {
+                    return p;
+                }
+            }
+            return null;
+
+        }
+
 
         public static bool IsNumeric(string input)
         {
@@ -808,15 +807,15 @@ namespace TP1
         {
 
             List<List<string>> listaStringMovimientosFiltrados = new List<List<string>>();
-            
+
 
             CajaDeAhorro? caja = contexto.cajas.Where(caja => caja._cbu == cbuCaja).FirstOrDefault();
 
-          
+
 
             foreach (Movimiento movimiento in caja._movimientos)
             {
-                
+
 
                 if (movimiento._detalle == detalle || movimiento._fecha.Date == fecha.Value.Date || movimiento._monto == monto)
 

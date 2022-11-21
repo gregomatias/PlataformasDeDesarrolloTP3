@@ -221,10 +221,9 @@ namespace TP1
 
             List<PlazoFijo> listPf = null;
 
-            if (banco.esAdmin())
-            {
-                listPf = banco.buscarPlazosFijosAdmin();
-            } else { listPf = banco.buscarPlazosFijosUsuario(); }
+      
+                listPf = banco.MostrarPlazoFijos();
+ 
 
             if (listPf != null) { 
                 foreach (PlazoFijo pf in listPf)
@@ -580,12 +579,9 @@ namespace TP1
 
             List<Pago> p = null;
 
-            if (banco.esAdmin())
-            {
-                p = banco.buscarPagosAdmin(pagado);
 
-            }
-            else { p = banco.buscarPagosUsuario(pagado); }
+                p = banco.MostrarPagos(pagado);
+
 
             if (!pagado)
             {
