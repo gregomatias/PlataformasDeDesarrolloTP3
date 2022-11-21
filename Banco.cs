@@ -734,7 +734,7 @@ namespace TP1
 
         public Pago buscarPago(int id)
         {
-            MessageBox.Show("ID: " + id);
+
             foreach (Pago p in contexto.pagos)
             {
                 if (p._id_pago == id)
@@ -753,7 +753,7 @@ namespace TP1
             return int.TryParse(input, out test);
         }
 
-        public bool modificarPago(int id)
+        public bool ModificarPago(int id)
         {
             //(double monto, string metodo, long numero)
             Pago pago = this.buscarPago(id);

@@ -630,7 +630,7 @@ namespace TP1
         private void button5_Click(object sender, EventArgs e)
         {
             //this.celda >= 0 && 
-            if (banco.modificarPago(this.celda))
+            if (banco.ModificarPago(this.celda))
             {
                 MessageBox.Show("El pago se realizo de manera exitosa");
                 cargarPagos();
