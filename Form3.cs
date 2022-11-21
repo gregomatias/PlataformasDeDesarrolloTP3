@@ -324,12 +324,11 @@ namespace TP1
 
             List<TarjetaDeCredito> tc = null;
 
-            if(banco.esAdmin())
-            {
-                tc = banco.buscarTarjetasAdmin();
-            } else { tc = banco.buscarTarjetas(); }
 
-            if(tc != null) { 
+            tc = banco.MostrarTarjetasDeCredito();
+
+
+            if (tc != null) { 
                 foreach (TarjetaDeCredito tarjeta in tc)
                 {
 
@@ -516,13 +515,12 @@ namespace TP1
 
             List<TarjetaDeCredito> tc = null;
 
-            if (banco.esAdmin())
-            {
-                tc = banco.buscarTarjetasAdmin();
-            } else { tc = banco.buscarTarjetasUsuario(); }
 
-            if(tc != null) { 
-                foreach (TarjetaDeCredito t in banco.buscarTarjetas())
+            tc = banco.MostrarTarjetasDeCredito();
+
+
+            if (tc != null) { 
+                foreach (TarjetaDeCredito t in tc)
                 {
                     cBox_tarjeta.Items.Add(t._numero);
                 }
@@ -701,7 +699,7 @@ namespace TP1
 
                 List<List<string>> listaMovimientos = new List<List<string>>();
 
-                listaMovimientos = banco.BuscarMovimiento(comboBox3_movimientos.Text, txtb_filtro_detalle.Text, dateTimePicker_filtro.Value, montoFiltro);
+                listaMovimientos = banco.MostrarMovimientos(comboBox3_movimientos.Text, txtb_filtro_detalle.Text, dateTimePicker_filtro.Value, montoFiltro);
 
                 dataGridView_movimiento.Rows.Clear();
                 dataGridView_movimiento.Refresh();

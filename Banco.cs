@@ -278,30 +278,28 @@ namespace TP1
 
         }
 
-        public List<TarjetaDeCredito> buscarTarjetasUsuario(Usuario usuario)
+
+
+
+        public List<TarjetaDeCredito> MostrarTarjetasDeCredito()
         {
-            foreach (Usuario u in contexto.usuarios)
+            Usuario? us = contexto.usuarios.Where(u => u._dni == usuarioLogueado._dni).FirstOrDefault();
+            List<TarjetaDeCredito> lista = new List<TarjetaDeCredito>();
+            if (us != null)
+
             {
-                if (u._dni == usuario._dni)
+                if (us._esUsuarioAdmin == false)
                 {
-                    return u._tarjetas;
+                    lista = us._tarjetas.ToList();
                 }
+                else
+                {
+                    lista = contexto.tarjetas.ToList();
+                }
+
             }
 
-            return null;
-        }
-
-        public List<TarjetaDeCredito> buscarTarjetasUsuario()
-        {
-            foreach (Usuario u in contexto.usuarios)
-            {
-                if (usuarioLogueado._dni == u._dni)
-                {
-                    return u._tarjetas;
-                }
-            }
-
-            return null;
+            return lista;
         }
 
 
@@ -637,15 +635,8 @@ namespace TP1
             return this.agregarTarjeta(usuarioLogueado, tc);
         }
 
-        public List<TarjetaDeCredito> buscarTarjetas()
-        {
-            return this.buscarTarjetasUsuario(usuarioLogueado);
-        }
 
-        public List<TarjetaDeCredito> buscarTarjetasAdmin()
-        {
-            return contexto.tarjetas.ToList();
-        }
+
 
 
         public bool PagarTarjeta(string numero, string cbu)
@@ -813,23 +804,19 @@ namespace TP1
         }
 
 
-        public List<List<string>> BuscarMovimiento(string cbuCaja, string detalle = "default", DateTime? fecha = null, float monto = 0)
+        public List<List<string>> MostrarMovimientos(string cbuCaja, string detalle = "default", DateTime? fecha = null, float monto = 0)
         {
 
-
-
-
             List<List<string>> listaStringMovimientosFiltrados = new List<List<string>>();
-            //Busca Id de caja de ahoro
+            
+
             CajaDeAhorro? caja = contexto.cajas.Where(caja => caja._cbu == cbuCaja).FirstOrDefault();
 
-
+          
 
             foreach (Movimiento movimiento in caja._movimientos)
             {
-                MessageBox.Show(movimiento.ToString());
-
-
+                
 
                 if (movimiento._detalle == detalle || movimiento._fecha.Date == fecha.Value.Date || movimiento._monto == monto)
 
