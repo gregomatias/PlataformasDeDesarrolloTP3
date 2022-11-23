@@ -71,9 +71,9 @@ namespace TP1
                 .HasMany(U => U.cajas)
                 .WithMany(P => P.titulares)
                 .UsingEntity<UsuarioCajaDeAhorro>(
-                    eup => eup.HasOne(up => up.caja).WithMany(p => p.usuarioCajas).HasForeignKey(u => u.id_caja),
-                    eup => eup.HasOne(up => up.user).WithMany(u => u.usuarioCajas).HasForeignKey(u => u.id_usuario),
-                    eup => eup.HasKey(k => new { k.id_caja , k.id_usuario})
+                    eup => eup.HasOne(up => up.caja).WithMany(p => p.usuarioCajas).HasForeignKey(u => u._id_caja),
+                    eup => eup.HasOne(up => up.user).WithMany(u => u.usuarioCajas).HasForeignKey(u => u._id_usuario),
+                    eup => eup.HasKey(k => new { k._id_caja , k._id_usuario})
                 );
 
                 //nombre de la tabla
@@ -156,6 +156,35 @@ namespace TP1
             .WithMany(C => C._movimientos)
             .HasForeignKey(M => M._id_CajaDeAhorro)
             .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Usuario>().HasData(
+    new { _id_usuario = 1, _dni = 111, _nombre = "MATIAS", _apellido = "GREGO", _mail = "M@G", _password = "111", _bloqueado = false, _esUsuarioAdmin = false, _intentosFallidos = 0 },
+    new { _id_usuario = 2, _dni = 222, _nombre = "ALAN", _apellido = "RIVA", _mail = "A@R", _password = "222", _bloqueado = false, _esUsuarioAdmin = false, _intentosFallidos = 0 },
+    new { _id_usuario = 3, _dni = 333, _nombre = "NICOLAS", _apellido = "VILLEGAS", _mail = "N@V", _password = "333", _bloqueado = false, _esUsuarioAdmin = false, _intentosFallidos = 0 },
+    new { _id_usuario = 4, _dni = 444, _nombre = "WALTER", _apellido = "GOMEZ", _mail = "W@G", _password = "444", _bloqueado = false, _esUsuarioAdmin = true, _intentosFallidos = 0 });
+            modelBuilder.Entity<CajaDeAhorro>().HasData(
+                  new { _id_caja = 1, _cbu = "11120221121", _saldo = 0.00 },
+                  new { _id_caja = 2, _cbu = "22220221122", _saldo = 0.00 },
+                  new { _id_caja = 3, _cbu = "33320221123", _saldo = 0.00 },
+                  new { _id_caja = 4, _cbu = "44420221124", _saldo = 0.00 },
+                  new { _id_caja = 5, _cbu = "55520221125", _saldo = 0.00 },
+                  new { _id_caja = 6, _cbu = "66620221125", _saldo = 0.00 });
+            modelBuilder.Entity<UsuarioCajaDeAhorro>().HasData(
+                new { _id_caja = 1, _id_usuario = 1 },
+                new { _id_caja = 2, _id_usuario = 2 },
+                new { _id_caja = 3, _id_usuario = 3 },
+                new { _id_caja = 4, _id_usuario = 4 },
+                new { _id_caja = 5, _id_usuario = 1 },
+                new { _id_caja = 6, _id_usuario = 1 });
+            modelBuilder.Entity<TarjetaDeCredito>().HasData(
+                new { _id_tarjeta = 1, _id_usuario = 1, _numero = "11120221121", _codigoV = 0, _limite = 500000.00, _consumos = 100.00 },
+                new { _id_tarjeta = 2, _id_usuario = 2, _numero = "22220221121", _codigoV = 0, _limite = 400000.00, _consumos = 900.00 },
+                new { _id_tarjeta = 3, _id_usuario = 3, _numero = "33320221121", _codigoV = 0, _limite = 600000.00, _consumos = 400.00 },
+                new { _id_tarjeta = 4, _id_usuario = 4, _numero = "44420221121", _codigoV = 0, _limite = 200000.00, _consumos = 600.00 });
+            modelBuilder.Entity<PlazoFijo>().HasData(
+                new { _id_plazoFijo = 1, _id_usuario = 1, _monto = 1000.00, _fechaIni = DateTime.Now, _fechaFin = DateTime.Now.AddMonths(1), _tasa = 1.5, _pagado = false },
+                new { _id_plazoFijo = 2, _id_usuario = 2, _monto = 2000.00, _fechaIni = DateTime.Now, _fechaFin = DateTime.Now.AddMonths(1), _tasa = 1.5, _pagado = false },
+                new { _id_plazoFijo = 3, _id_usuario = 3, _monto = 3000.00, _fechaIni = DateTime.Now, _fechaFin = DateTime.Now.AddMonths(1), _tasa = 1.5, _pagado = false },
+                new { _id_plazoFijo = 4, _id_usuario = 4, _monto = 4000.00, _fechaIni = DateTime.Now, _fechaFin = DateTime.Now.AddMonths(1), _tasa = 1.5, _pagado = false });
 
 
         }

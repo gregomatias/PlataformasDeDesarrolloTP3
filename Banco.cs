@@ -29,19 +29,14 @@ namespace TP1
                 contexto = new MyContext();
                 //cargo los usuarios
 
-                contexto.usuarios.Load();
-                contexto.usuarios.Include(u => u.cajas).Load();
-                contexto.usuarios.Include(u => u._plazosFijos).Load();
-                contexto.usuarios.Include(u => u._tarjetas).Load();
-                contexto.usuarios.Include(u => u._pagos).Load();
+
+                contexto.usuarios.Include(u => u.cajas)
+                .Include(u => u._plazosFijos)
+               .Include(u => u._tarjetas)
+                .Include(u => u._pagos).Load();
                 contexto.cajas.Include(u => u._movimientos).Load();
 
-                if (contexto.usuarios.Count() == 0)
-                {
-                    this.agregarUsuario(555, "MATIAS", "GREGO", "M@G", "1", false, true, 0);
-                    this.agregarUsuario(444, "ALAN", "RIVA", "A@R", "1", false, false, 0);
-                    this.agregarUsuario(333, "NICOLAS", "VILLEGAS", "N@V", "1", false, false, 0);
-                }
+
 
 
 
