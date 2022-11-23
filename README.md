@@ -1,10 +1,22 @@
-"# TP2-PlataformasDeDesarrollo"
+"# TP3-PlataformasDeDesarrollo"
 
 Integrantes:
 
 Alan Riva, Nicolas Villegas, Luis Duarte Carvhalosa, Natalia Belen Espinosa, Patricia Belen Cabrera, Matias Grego
 
-TP2:
+TP3: https://github.com/gregomatias/PlataformasDeDesarrolloTP3
+
+Se adapto todo el TP que veniamos haciendo a Entity Framework
+Para probar la aplicación se crearon usuarios de prueba con HasData.
+Usuario admin: us.: 444 Pass: 444
+
+
+
+
+
+
+
+TP2: https://github.com/gregomatias/TP1PlataformasDeDesarrollo
 General:
 
 Se adapto todos los metodos para que funcionen con la base de datos.
@@ -32,7 +44,7 @@ Boton Desbloquear:Permite desbloquear un usuario y resetearle el contador de iun
 Boton Eliminar: Permite elimiar todos los objetos del usuario, a excepcion de las cajas de ahorro compartidas con otro usuario.
 
 
-TP1:   
+TP1:   https://github.com/gregomatias/TP1PlataformasDeDesarrollo
 1- Al abri la aplicación, el usuario visualiza una pantalla de login donde podrá:
 -	Ingresar usuario y contraseña para iniciar sesión.
 -   Registrarse en la aplicación ingresando sus datos personales a través de un formulario.
