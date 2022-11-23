@@ -8,6 +8,7 @@ TP3: https://github.com/gregomatias/PlataformasDeDesarrolloTP3
 
 Se adapto todo el TP que veniamos haciendo a Entity Framework
 Para probar la aplicación se crearon usuarios de prueba con HasData.
+
 Usuario admin: us.: 444 Pass: 444
 
 
@@ -17,6 +18,7 @@ Usuario admin: us.: 444 Pass: 444
 
 
 TP2: https://github.com/gregomatias/TP1PlataformasDeDesarrollo
+
 General:
 
 Se adapto todos los metodos para que funcionen con la base de datos.
